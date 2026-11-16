@@ -228,12 +228,35 @@ legend{font-size:21px;font-weight:800;padding:0;margin-bottom:6px}
 .chips span{display:block;padding:12px 18px;border-radius:999px;border:1px solid var(--line);font-weight:700;background:rgba(255,255,255,.04)}
 .chips input:checked+span{background:var(--magenta);border-color:var(--magenta);color:#000}
 
+.field input.codein,.codein{width:100%;min-width:0;height:56px;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);
+  font:600 18px/1.4 var(--body);font-variant-numeric:tabular-nums lining-nums;letter-spacing:.12em;text-indent:0;text-align:left;color:#fff}
+.codein::placeholder{font-size:16px;font-weight:400;letter-spacing:0;color:#8a7b89}
+.codein:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.field input.codein[readonly]{background:rgba(0,0,0,.22);border:1px solid var(--line);color:#ddd3dc;cursor:default}
+.field input.codein[aria-invalid="true"]{border-color:#ffb4c8}
+.edit{margin:12px 0 0}
+#editbtn{min-height:44px;margin:0;padding:8px 0;border:0;background:none;border-radius:4px;font-size:14px;font-weight:600;color:var(--mute);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.editbox{margin-top:8px;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.26)}
+.editbox label{display:block;font-weight:700;margin-bottom:6px}
+.editbox .hint{margin-bottom:12px}
+.editrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
+#editload{height:56px;margin:0;padding:0 16px;border-radius:16px;white-space:nowrap}
+#editload[disabled]{opacity:.6;cursor:default}
+.editbox .msg{margin-top:10px;min-height:0}
+.editbox .msg:empty{display:none}
+.edit+#f{margin-top:32px}
+.submitblock{display:grid;gap:24px}
+#codebox{margin-bottom:0}
+#codebox.bad legend{color:#fff}
+#codebox .field-error{margin:8px 0 0;font-size:14px}
+#codebox .field-error:empty{display:none}
 .send{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
 .send button{padding:18px 34px;border-radius:999px;border:0;background:#fff;color:#000;font-weight:800;font-size:18px;cursor:pointer}
 .send button:hover{background:var(--pink)}
 .send button[disabled]{opacity:.5;cursor:default}
-.msg{font-weight:700;min-height:1.5em}
-.msg.err{color:#ffd0d0}
+.msg{font-size:14px;line-height:1.5;font-weight:500;min-height:1.5em}
+.msg.ok{color:#fff}
+.msg.err,.field-error{color:#ffb4c8}
 
 /* ── 현황 ── */
 .now{background:#5a0048;padding-top:20px}
@@ -377,6 +400,19 @@ fieldset.bad .field-error{display:block}
     <h2 data-scrub>참여 가능하신 날짜를 골라주세요</h2>
     <p class="sub">수요조사는 익명으로 진행되며, 날짜 중복 선택이 가능합니다.</p>
 
+    <div class="edit">
+      <button type="button" id="editbtn" aria-expanded="false" aria-controls="editbox">이미 답하셨다면 재투표하기</button>
+      <div class="editbox" id="editbox" hidden>
+        <label for="editcode">수정코드</label>
+        <p class="hint">참석날짜 수정/재투표 시 필요한 코드입니다</p>
+        <div class="editrow">
+          <input class="codein" id="editcode" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="숫자 4자리" enterkeyhint="go">
+          <button type="button" class="more" id="editload">코드 확인</button>
+        </div>
+        <p class="msg" id="editmsg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
     <form id="f" novalidate>
       <fieldset>
         <legend>참석 가능한 날짜</legend>
@@ -414,9 +450,18 @@ fieldset.bad .field-error{display:block}
         <input id="nick" name="nick" type="text" maxlength="20" autocomplete="off" placeholder="예: 퍼즐왕" enterkeyhint="done">
       </fieldset>
 
+      <div class="submitblock">
+      <fieldset class="field" id="codebox">
+        <legend><label for="code">수정코드</label></legend>
+        <p class="hint" id="codehint">참석날짜 수정/재투표 시 필요한 코드입니다</p>
+        <input class="codein" id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="숫자 4자리" enterkeyhint="done" required aria-describedby="codehint">
+        <p class="field-error" id="err-code"></p>
+      </fieldset>
+
       <div class="send">
         <button type="submit" id="btn">수요조사 보내기</button>
         <p class="msg" id="msg" role="status" aria-live="polite"></p>
+      </div>
       </div>
     </form>
   </div>
@@ -547,14 +592,48 @@ function myToken() {
   if (!t) { t = Array.from(crypto.getRandomValues(new Uint8Array(16)), (x) => x.toString(16).padStart(2, "0")).join(""); try { localStorage.setItem("dl-token", t); } catch (e) {} }
   return t;
 }
+// ── 수정 코드: 한 번 정하면 이 기기에 기억해 두고 칸을 잠근다
+let editing = false, confirmed = "";
+function lockCode(c) {
+  const el = $("#code"); el.value = c; el.readOnly = true;
+  try { localStorage.setItem("dl-code", c); } catch (e) {}
+}
+try { const c = localStorage.getItem("dl-code"); if (/^\d{4}$/.test(c || "")) { lockCode(c); $("#editcode").value = c; $("#btn").textContent = "다시 보내기"; } } catch (e) {}
+document.querySelectorAll(".codein").forEach((el) => el.addEventListener("input", () => { el.value = el.value.replace(/\D/g, "").slice(0, 4);
+  if (el.id === "editcode" && el.value !== confirmed) { $("#editload").disabled = false; $("#editload").textContent = "코드 확인"; } }));
+$("#editbtn").addEventListener("click", (e) => {
+  const box = $("#editbox"); box.hidden = !box.hidden; e.currentTarget.setAttribute("aria-expanded", String(!box.hidden));
+  if (!box.hidden) $("#editcode").focus({preventScroll: true});
+});
+$("#editcode").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); $("#editload").click(); } });
+// 재투표하기: 코드가 맞으면 고른 것을 모두 비우고 새로 고르게 한다(보내면 이전 답이 바뀐다)
+$("#editload").addEventListener("click", async () => {
+  const code = $("#editcode").value.trim(), em = $("#editmsg"), lb = $("#editload");
+  em.className = "msg err";
+  if (!/^\d{4}$/.test(code)) { em.textContent = "수정코드 숫자 4자리를 적어 주시기 바랍니다."; return $("#editcode").focus(); }
+  lb.disabled = true; em.className = "msg"; em.textContent = "확인하는 중입니다.";
+  try {
+    const t = await call({method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({action:"load", code})});
+    if (!t.ok) throw new Error(t.error || "fail");
+    if (!t.found) { em.className = "msg err"; em.textContent = "등록된 응답이 없습니다. 코드를 다시 확인해 주시기 바랍니다."; lb.disabled = false; return; }
+    const f = $("#f");
+    f.querySelectorAll("[name=date],[name=prog],[name=attend]").forEach((c) => { c.checked = false; });
+    f.querySelectorAll(".tags label").forEach((l) => l.classList.remove("lit", "unlit", "hit"));
+    $("#memo").value = ""; $("#nick").value = ""; $("#nickbox").hidden = true;
+    editing = true; lockCode(code); $("#btn").textContent = "다시 보내기"; $("#msg").textContent = "";
+    em.className = "msg ok"; em.textContent = "코드를 확인했습니다. 다시 선택해 보내면 이전 응답이 바뀝니다."; lb.textContent = "확인 완료"; confirmed = code;
+    $("#tags").scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth"});
+  } catch { em.className = "msg err"; em.textContent = "확인하지 못했습니다. 잠시 뒤 다시 눌러 주시기 바랍니다."; }
+  lb.disabled = confirmed === code;
+});
 $("#f").addEventListener("submit", async (e) => {
   e.preventDefault();
   const fd = new FormData(e.target), msg = $("#msg"), btn = $("#btn");
-  const body = {token: myToken(), nick:(fd.get("nick")||"").trim(), attend:fd.get("attend"), dates:fd.getAll("date"), progs:fd.getAll("prog"), memo:(fd.get("memo")||"").trim()};
+  const body = {token: myToken(), code: $("#code").value.trim(), edit: editing, nick:(fd.get("nick")||"").trim(), attend:fd.get("attend"), dates:fd.getAll("date"), progs:fd.getAll("prog"), memo:(fd.get("memo")||"").trim()};
   msg.className = "msg err";
   document.querySelectorAll("fieldset.bad").forEach((x) => x.classList.remove("bad"));
   const miss = (el, text) => {  // 빠진 칸으로 화면을 옮기고 그 칸을 잡는다
-    const fs = el.closest("fieldset"); fs.classList.add("bad"); msg.textContent = text;
+    const fs = el.closest("fieldset"); fs.classList.add("bad"); msg.className = "msg err"; msg.textContent = text;
     let fe = fs.querySelector(".field-error");
     if (!fe) { fe = document.createElement("p"); fe.className = "field-error"; fe.id = "err-" + el.name; fs.querySelector("legend").after(fe); }
     fe.textContent = text; el.setAttribute("aria-invalid", "true"); el.setAttribute("aria-describedby", fe.id);
@@ -564,14 +643,16 @@ $("#f").addEventListener("submit", async (e) => {
   if (!body.attend) return miss(e.target.querySelector("[name=attend]"), "참석 의사를 골라 주시기 바랍니다.");
   if (body.memo && !body.nick) return miss($("#nick"), "글에 붙일 닉네임을 적어 주시기 바랍니다.");
   if (!body.memo) body.nick = "";
+  if (!/^\d{4}$/.test(body.code)) return miss($("#code"), "수정코드를 숫자 4자리로 입력해 주시기 바랍니다.");
   btn.disabled = true; msg.className = "msg"; msg.textContent = "보내는 중입니다.";
   try {
     // text/plain 으로 보내 사전 요청(CORS preflight) 없이 앱스 스크립트가 받게 한다
     const t = await call({method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(body)});
-    if (t.error === "nick_taken") { btn.disabled = false; return miss($("#nick"), "이미 다른 분이 쓴 닉네임입니다. 다른 닉네임으로 적어 주세요."); }
+    if (t.error === "code_taken") { btn.disabled = false; return miss($("#code"), "이미 사용 중인 코드입니다. 다른 숫자 4자리를 입력해 주시기 바랍니다."); }
     if (!t.ok) throw new Error(t.error || "fail");
-    msg.textContent = "보냈습니다. 같은 기기에서 다시 보내면 마지막 답으로 바뀝니다.";
-    paint(t); btn.textContent = "다시 보내기";
+    msg.className = "msg ok"; msg.textContent = `보냈습니다. 수정코드 ${body.code}로 언제든 재투표할 수 있습니다.`;
+    $("#err-code").textContent = ""; $("#code").removeAttribute("aria-invalid");
+    paint(t); btn.textContent = "다시 보내기"; lockCode(body.code);
   } catch {
     msg.className = "msg err"; msg.textContent = "보내지 못했습니다. 잠시 뒤 다시 눌러 주시기 바랍니다.";
   }
