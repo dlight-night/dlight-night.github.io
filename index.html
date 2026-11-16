@@ -460,7 +460,7 @@ $("#tags").innerHTML = ["2026", "2027"].map((y) => {
     return `<label><input type="checkbox" name="date" value="${x.v}" aria-label="${y}년 ${m}월 ${d}일 ${x.w}요일"><span class="tag${x.w === "일" ? " sun" : ""}" aria-hidden="true"><span class="tag-month">${two(m)}월</span><b>${two(d)}</b><i>${x.w}</i><em></em></span></label>`;
   }).join("") + "</div>").join("") + "</div></div>";
 }).join("");
-// 날짜 메달을 고를 때 나는 소리: 쇠 참이 챠랑 하고 물방울이 떨어진다(일레븐랩스 효과음 두 개를 겹침)(누른 뒤에만 재생되므로 iOS·안드로이드에서도 난다)
+// 날짜 메달을 고를 때 나는 키링 소리(누른 뒤에만 재생되므로 iOS·안드로이드에서도 난다)
 const sfx = {on: true, ctx: null, buf: null, el: null, live: new Set()};
 function hush(fade) { sfx.live.forEach((x) => { try { x.g.gain.setTargetAtTime(0, sfx.ctx.currentTime, fade); x.src.stop(sfx.ctx.currentTime + fade * 5); } catch (e) {} }); sfx.live.clear(); if (sfx.el) sfx.el.pause(); }
 function jingle(rate) {
@@ -469,21 +469,20 @@ function jingle(rate) {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (AC && !sfx.ctx) {
       sfx.ctx = new AC();
-      fetch("img/chime.mp3?v=2").then((r) => r.arrayBuffer()).then((a) => new Promise((ok, no) => sfx.ctx.decodeAudioData(a, ok, no))).then((b) => { sfx.buf = b; }).catch(() => {});
+      fetch("img/jingle.mp3").then((r) => r.arrayBuffer()).then((a) => new Promise((ok, no) => sfx.ctx.decodeAudioData(a, ok, no))).then((b) => { sfx.buf = b; }).catch(() => {});
     }
     if (sfx.ctx && sfx.ctx.state === "suspended") sfx.ctx.resume();
     if (sfx.ctx && sfx.buf) {
       const src = sfx.ctx.createBufferSource(), g = sfx.ctx.createGain();
       src.buffer = sfx.buf; src.playbackRate.value = rate; g.gain.value = 0.7; hush(0.015); src.connect(g); g.connect(sfx.ctx.destination); const item = {src, g}; sfx.live.add(item); src.onended = () => { sfx.live.delete(item); try { src.disconnect(); g.disconnect(); } catch (e) {} }; src.start();
     } else {  // 아직 못 읽었으면 일반 재생
-      if (!sfx.el) sfx.el = new Audio("img/chime.mp3?v=2");
+      if (!sfx.el) sfx.el = new Audio("img/jingle.mp3");
       sfx.el.currentTime = 0; sfx.el.volume = 0.7; const pr = sfx.el.play(); if (pr && pr.catch) pr.catch(() => {});
     }
   } catch (e) {}
 }
 $("#tags").addEventListener("change", (e) => {
-  // 메달마다 음 높이가 다르다(5음 음계로 올라간다). 풀 때는 낮은 음
-  if (e.target.checked) jingle(Math.pow(2, [-4, -2, 0, 1, 3, 5, 6, 8][DATES.findIndex((x) => x.v === e.target.value)] / 12)); else jingle(0.7);
+    if (e.target.checked) jingle(0.94 + DATES.findIndex((x) => x.v === e.target.value) * 0.05); else jingle(0.8);
   const l = e.target.closest("label"); l.classList.remove("hit"); void l.offsetWidth; l.classList.add("hit");
 });
 $("#bars").innerHTML = ["2026", "2027"].map((y) => `<div class="bar-group"><p class="bar-year">${y}</p>` + DATES.filter((x) => x.y === y).map((x) =>
