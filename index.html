@@ -7,7 +7,7 @@
 <meta name="description" content="몸도 쓰고 머리도 쓰는 디라이트 실내 팀 대항전. 수요조사에 참여 부탁드립니다.">
 <meta property="og:title" content="D.LIGHT 실내 팀 대항전 2026">
 <meta property="og:description" content="가벼운 운동, 협동 미션, 디자이너 감각 두뇌 게임. 수요조사에 참여 부탁드립니다.">
-<meta property="og:image" content="https://dlight-night.github.io/img/og.jpg?v=15">
+<meta property="og:image" content="https://dlight-night.github.io/img/og.jpg?v=16">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://dlight-night.github.io/">
@@ -116,8 +116,14 @@ button,input,textarea{font:inherit;color:inherit}
 .hero h1{font-family:var(--display);font-weight:800;line-height:.92;letter-spacing:-.03em;
   font-size:clamp(52px,15.5vw,168px)}
 @media(min-width:768px){.hero h1{font-size:clamp(72px,11vw,152px)}}
-.yr-break{display:none}
-@media(max-width:767px){.hero h1 span.yr{font-size:24px;line-height:1.3}.yr-break{display:block}}
+.hero h1 span.yr{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.spark{display:block;flex:none;width:33px;height:33px;margin:0;transform:translateY(-1px);shape-rendering:crispEdges;overflow:visible}
+@media(min-width:1024px){.hero h1 span.yr{gap:12px}.spark{width:44px;height:44px}}
+.spark rect{opacity:1}
+.motion .spark .kb,.motion .spark .kc{animation:spark 2.4s ease-in-out infinite}
+.motion .spark .kc{animation-delay:-1.2s}
+@keyframes spark{0%,100%{opacity:1}50%{opacity:.75}}
+@media(prefers-reduced-motion:reduce){.spark rect{animation:none!important;opacity:1}}
 .hero h1 span{display:block}
 .hero h1 .kr{font-family:var(--body);font-weight:900;letter-spacing:-.05em;line-height:1.08;font-size:.9em}
 .hero h1 .yr{font-family:var(--body);font-weight:800;font-size:clamp(26px,3.4vw,46px);line-height:1.2;letter-spacing:-.02em;margin-top:.5em;color:#fff}
@@ -335,7 +341,7 @@ fieldset.bad .field-error{display:block}
   <div class="hero-art"><img class="heroimg" src="img/hero.jpg" alt="호루라기, 운동화, 퍼즐 조각, 깃발 모양 참이 달린 크롬 키링" width="2528" height="1696"></div>
   <canvas class="fx" id="fx" aria-hidden="true"></canvas>
   <div class="hero-copy">
-    <h1><span class="chrome">D.LIGHT</span><span class="chrome kr">팀 대항전</span><span class="yr">2026/2027 <br class="yr-break">연말 모임, 실내에서</span></h1>
+    <h1><span class="chrome">D.LIGHT</span><span class="chrome kr">팀 대항전</span><span class="yr">2026/2027 이벤트<svg class="spark" viewBox="0 0 11 11" aria-hidden="true"><rect class="kw" x="5" y="5" width="1" height="1" fill="#FFFFFF"/><rect class="ka" x="5" y="3" width="1" height="1" fill="#B8FFF6"/><rect class="ka" x="5" y="7" width="1" height="1" fill="#B8FFF6"/><rect class="ka" x="3" y="5" width="1" height="1" fill="#B8FFF6"/><rect class="ka" x="7" y="5" width="1" height="1" fill="#B8FFF6"/><rect class="kb" x="3" y="3" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="7" y="3" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="3" y="7" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="7" y="7" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="5" y="1" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="5" y="9" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="1" y="5" width="1" height="1" fill="#D2B6FF"/><rect class="kb" x="9" y="5" width="1" height="1" fill="#D2B6FF"/><rect class="kc" x="5" y="0" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="5" y="10" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="0" y="5" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="10" y="5" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="1" y="1" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="9" y="1" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="1" y="9" width="1" height="1" fill="#FF8CE8"/><rect class="kc" x="9" y="9" width="1" height="1" fill="#FF8CE8"/></svg></span></h1>
     <p class="lede">가벼운 운동부터 협동 미션, 디자이너의 감각을 활용한 두뇌 게임까지!<br>팀을 이뤄 몸도 쓰고 머리도 쓰는 실내 팀 대항전을 준비해보려고 합니다.<br>잠시 시간 내셔서 수요조사 참여 부탁드립니다.</p>
     <a class="go" href="#survey">1분 수요조사 하기</a>
   </div>
@@ -454,7 +460,7 @@ $("#tags").innerHTML = ["2026", "2027"].map((y) => {
     return `<label><input type="checkbox" name="date" value="${x.v}" aria-label="${y}년 ${m}월 ${d}일 ${x.w}요일"><span class="tag${x.w === "일" ? " sun" : ""}" aria-hidden="true"><span class="tag-month">${two(m)}월</span><b>${two(d)}</b><i>${x.w}</i><em></em></span></label>`;
   }).join("") + "</div>").join("") + "</div></div>";
 }).join("");
-// 날짜 태그를 걸 때 나는 키링 소리(누른 뒤에만 재생되므로 iOS·안드로이드에서도 난다)
+// 날짜 메달을 고를 때 나는 소리: 쇠 참이 챠랑 하고 물방울이 떨어진다(일레븐랩스 효과음 두 개를 겹침)(누른 뒤에만 재생되므로 iOS·안드로이드에서도 난다)
 const sfx = {on: true, ctx: null, buf: null, el: null, live: new Set()};
 function hush(fade) { sfx.live.forEach((x) => { try { x.g.gain.setTargetAtTime(0, sfx.ctx.currentTime, fade); x.src.stop(sfx.ctx.currentTime + fade * 5); } catch (e) {} }); sfx.live.clear(); if (sfx.el) sfx.el.pause(); }
 function jingle(rate) {
@@ -463,20 +469,21 @@ function jingle(rate) {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (AC && !sfx.ctx) {
       sfx.ctx = new AC();
-      fetch("img/jingle.mp3").then((r) => r.arrayBuffer()).then((a) => new Promise((ok, no) => sfx.ctx.decodeAudioData(a, ok, no))).then((b) => { sfx.buf = b; }).catch(() => {});
+      fetch("img/chime.mp3?v=2").then((r) => r.arrayBuffer()).then((a) => new Promise((ok, no) => sfx.ctx.decodeAudioData(a, ok, no))).then((b) => { sfx.buf = b; }).catch(() => {});
     }
     if (sfx.ctx && sfx.ctx.state === "suspended") sfx.ctx.resume();
     if (sfx.ctx && sfx.buf) {
       const src = sfx.ctx.createBufferSource(), g = sfx.ctx.createGain();
       src.buffer = sfx.buf; src.playbackRate.value = rate; g.gain.value = 0.7; hush(0.015); src.connect(g); g.connect(sfx.ctx.destination); const item = {src, g}; sfx.live.add(item); src.onended = () => { sfx.live.delete(item); try { src.disconnect(); g.disconnect(); } catch (e) {} }; src.start();
     } else {  // 아직 못 읽었으면 일반 재생
-      if (!sfx.el) sfx.el = new Audio("img/jingle.mp3");
+      if (!sfx.el) sfx.el = new Audio("img/chime.mp3?v=2");
       sfx.el.currentTime = 0; sfx.el.volume = 0.7; const pr = sfx.el.play(); if (pr && pr.catch) pr.catch(() => {});
     }
   } catch (e) {}
 }
 $("#tags").addEventListener("change", (e) => {
-  if (e.target.checked) jingle(0.94 + DATES.findIndex((x) => x.v === e.target.value) * 0.05); else jingle(0.8);
+  // 메달마다 음 높이가 다르다(5음 음계로 올라간다). 풀 때는 낮은 음
+  if (e.target.checked) jingle(Math.pow(2, [-4, -2, 0, 1, 3, 5, 6, 8][DATES.findIndex((x) => x.v === e.target.value)] / 12)); else jingle(0.7);
   const l = e.target.closest("label"); l.classList.remove("hit"); void l.offsetWidth; l.classList.add("hit");
 });
 $("#bars").innerHTML = ["2026", "2027"].map((y) => `<div class="bar-group"><p class="bar-year">${y}</p>` + DATES.filter((x) => x.y === y).map((x) =>
