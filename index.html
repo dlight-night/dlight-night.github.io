@@ -7,7 +7,7 @@
 <meta name="description" content="몸도 쓰고 머리도 쓰는 디라이트 실내 팀 대항전. 수요조사에 참여 부탁드립니다.">
 <meta property="og:title" content="D.LIGHT 실내 팀 대항전 2026">
 <meta property="og:description" content="가벼운 운동, 협동 미션, 디자이너 감각 두뇌 게임. 수요조사에 참여 부탁드립니다.">
-<meta property="og:image" content="https://dlight-night.github.io/img/og.jpg?v=14">
+<meta property="og:image" content="https://dlight-night.github.io/img/og.jpg?v=15">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://dlight-night.github.io/">
@@ -116,6 +116,8 @@ button,input,textarea{font:inherit;color:inherit}
 .hero h1{font-family:var(--display);font-weight:800;line-height:.92;letter-spacing:-.03em;
   font-size:clamp(52px,15.5vw,168px)}
 @media(min-width:768px){.hero h1{font-size:clamp(72px,11vw,152px)}}
+.yr-break{display:none}
+@media(max-width:767px){.hero h1 span.yr{font-size:24px;line-height:1.3}.yr-break{display:block}}
 .hero h1 span{display:block}
 .hero h1 .kr{font-family:var(--body);font-weight:900;letter-spacing:-.05em;line-height:1.08;font-size:.9em}
 .hero h1 .yr{font-family:var(--body);font-weight:800;font-size:clamp(26px,3.4vw,46px);line-height:1.2;letter-spacing:-.02em;margin-top:.5em;color:#fff}
@@ -168,35 +170,45 @@ legend{font-size:21px;font-weight:800;padding:0;margin-bottom:6px}
 .seg input:focus-visible+span,.chips input:focus-visible+span,.tags input:focus-visible+.tag{outline:3px solid #fff;outline-offset:3px}
 
 /* 날짜 = 고리에 거는 크롬 태그 */
-.ring{height:18px;margin:0 6px;border-radius:999px;
-  background:linear-gradient(180deg,#fff,#9a9da8 45%,#33343b 55%,#c9ccd5);box-shadow:0 6px 18px rgba(0,0,0,.6)}
-.tags{display:flex;gap:28px;align-items:flex-start}
-.yg{flex:var(--n) 1 0;min-width:0}
-.yl{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0 0 10px 4px}
-.tagrow{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;padding:0 10px}
-
-.tags label{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer;transform-origin:50% 0}
-.tags label::before{content:"";width:22px;height:34px;margin-top:-8px;border-radius:12px;border:5px solid #c9ccd5;
-  box-shadow:inset 0 0 0 1px #55565e,0 2px 0 #2b2c33}
-.tag{width:100%;max-width:120px;aspect-ratio:3/4.4;margin-top:-6px;border-radius:999px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:2px;color:#17171b;text-align:center;
-  background:linear-gradient(160deg,#fff 0%,#c9ccd5 30%,#7f828d 52%,#e7e9ee 70%,#9da0aa 100%);
-  box-shadow:inset 0 0 0 3px rgba(255,255,255,.75),inset 0 0 0 5px rgba(60,60,70,.55),0 16px 30px rgba(0,0,0,.55);
-  transition:filter .2s}
-.tag b{font-family:var(--body);font-weight:900;font-size:24px;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.tag i{font-style:normal;font-weight:800;font-size:15px;margin-top:4px}
-.tag.sun i{color:#b3005f}
-.tag em{font-style:normal;font-size:12px;font-weight:800;line-height:18px;width:18px;height:18px;margin-top:6px;border-radius:50%;background:rgba(0,0,0,.14)}
-.tags input:checked~.tag{background:linear-gradient(160deg,#fff 0%,#ffb3ee 26%,var(--magenta) 52%,#ffd6f6 72%,#ff5ad9 100%);
-  box-shadow:inset 0 0 0 3px rgba(255,255,255,.85),inset 0 0 0 5px rgba(120,0,90,.55),0 0 44px rgba(255,18,200,.75),0 16px 30px rgba(0,0,0,.55)}
-.tags input:checked~.tag em{background:#000;color:#fff}
-.tags input:checked~.tag em::after{content:"✓"}
-.tags input:checked~.tag.sun i{color:#17171b}
-.tag{pointer-events:none;transform-origin:50% -20px}
-.tags label::before{transform-origin:50% 4px}
-.tags label.hit .tag,.tags label.hit::before{animation:tagswing .45s cubic-bezier(.3,.1,.2,1)}
-@keyframes tagswing{0%{transform:rotate(0)}30%{transform:rotate(4deg)}65%{transform:rotate(-2.5deg)}100%{transform:rotate(0)}}
-
+.tags{--medal-w:76px;--medal-h:116px;--medal-gap:12px;--accent:#FF00C8;display:flex;align-items:flex-start;gap:24px;width:704px;max-width:100%}
+.yg{flex:none;width:max-content}
+.yl{margin:0 0 12px;font:500 14px/20px "Unbounded",sans-serif;letter-spacing:.02em;color:#C6BCC8}
+.tagrow{position:relative;display:flex;gap:var(--medal-gap);padding:0}
+.rack{display:grid;grid-auto-flow:column;grid-auto-columns:var(--medal-w);gap:var(--medal-gap)}
+.ring{position:absolute;top:0;left:12px;right:12px;height:8px;margin:0;border-radius:999px;
+  background:linear-gradient(180deg,#FFFFFF 0%,#DDE1E9 28%,#747B89 55%,#BFC5D1 78%,#F5F7FC 100%);
+  box-shadow:inset 0 1px 0 #FFFFFF,0 3px 8px rgba(0,0,0,.28)}
+.rack+.rack>.ring{display:none}
+.tags label{position:relative;display:block;width:var(--medal-w);height:calc(var(--medal-h) + 24px);padding-top:24px;cursor:pointer}
+.tags input{z-index:3}
+.tags label::before{content:"";position:absolute;top:-3px;left:calc(50% - 9px);width:18px;height:32px;margin:0;border:3px solid #C7CCD6;border-radius:9px;
+  box-shadow:inset 0 0 0 1px rgba(19,21,31,.55),0 0 0 1px rgba(255,255,255,.60)}
+.tag{position:relative;width:var(--medal-w);height:var(--medal-h);margin:0;padding:16px 10px;border:0;border-radius:999px;
+  display:grid;grid-template-rows:14px 30px 16px 18px;gap:2px;justify-items:center;align-items:center;color:#15151B;text-align:center;
+  font-family:"Pretendard Variable",Pretendard,sans-serif;font-variant-numeric:tabular-nums lining-nums;pointer-events:none;
+  background:linear-gradient(155deg,#FFFFFF 0%,#E5E7ED 18%,#B9BEC9 42%,#9298A5 56%,#E8EBF2 75%,#C7CDD8 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.90),inset 0 0 0 3px rgba(36,40,52,.28),0 8px 16px rgba(0,0,0,.28)}
+.tag-month{font-size:11px;font-weight:650;line-height:14px;letter-spacing:.02em;color:#373842}
+.tag b{font-family:inherit;font-size:28px;font-weight:800;line-height:30px;letter-spacing:0}
+.tag i{margin:0;font-style:normal;font-size:12px;font-weight:700;line-height:16px;letter-spacing:0;color:#34343E}
+.tag.sun i{color:#650038}
+.tag em{position:relative;width:18px;height:18px;margin:0;border-radius:50%;background:rgba(21,21,27,.10);box-shadow:inset 0 0 0 1px rgba(21,21,27,.18)}
+.tags input:checked+.tag{background:linear-gradient(155deg,#FFF7FD 0%,#FFC9F2 20%,#FF74E4 44%,var(--accent) 62%,#FFB6EF 84%,#FFE4F8 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),inset 0 0 0 3px rgba(91,0,67,.25),0 0 16px rgba(255,0,200,.22),0 8px 16px rgba(0,0,0,.28)}
+.tags input:checked+.tag .tag-month,.tags input:checked+.tag i{color:#15151B}
+.tags input:checked+.tag em{background:#111114;box-shadow:none}
+.tags input:checked+.tag em::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:9px;border-right:2px solid #FFFFFF;border-bottom:2px solid #FFFFFF;transform:rotate(45deg)}
+.tags input:focus-visible+.tag{outline:2px solid #FFFFFF;outline-offset:4px}
+.tags label.hit .tag{animation:tag-press 160ms ease-out}
+@keyframes tag-press{0%,100%{transform:translateY(0)}50%{transform:translateY(1px)}}
+@media(max-width:767px){
+  .tags{--medal-w:88px;--medal-h:124px;--medal-gap:16px;width:296px;margin-inline:0;flex-direction:column;gap:28px}
+  .tagrow{display:grid;gap:24px}
+  .rack{position:relative}
+  .rack+.rack>.ring{display:block}
+  .tag{padding:16px 12px;grid-template-rows:14px 32px 16px 18px;gap:4px}
+  .tag b{font-size:30px;line-height:32px}
+}
 .chips{display:flex;flex-wrap:wrap;gap:10px}
 .chips span{display:block;padding:12px 18px;border-radius:999px;border:1px solid var(--line);font-weight:700;background:rgba(255,255,255,.04)}
 .chips input:checked+span{background:var(--magenta);border-color:var(--magenta);color:#000}
@@ -210,11 +222,16 @@ legend{font-size:21px;font-weight:800;padding:0;margin-bottom:6px}
 
 /* ── 현황 ── */
 .now{background:#5a0048;padding-top:20px}
-.bars{margin-top:28px;display:grid;gap:14px}
-.bar{display:grid;grid-template-columns:118px 1fr 44px;align-items:center;gap:12px;font-weight:700}
-.bar div{height:16px;border-radius:999px;background:rgba(0,0,0,.35);overflow:hidden}
-.bar div i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#fff,var(--pink));transition:width .7s cubic-bezier(.2,.7,.2,1)}
-.bar output{text-align:right;font-family:var(--display);font-weight:500}
+.bars{margin-top:28px;display:grid;gap:24px}
+.bar-group{display:grid;gap:10px}
+.bar-year{margin:0;font:500 14px/20px "Unbounded",sans-serif;letter-spacing:.02em;color:#E9C3E2}
+.bar{display:grid;grid-template-columns:96px minmax(0,1fr) 40px;gap:16px;align-items:center;min-height:32px}
+.bar-label{display:grid;grid-template-columns:44px 16px;gap:8px;align-items:center;white-space:nowrap;font:650 16px/20px "Pretendard Variable",sans-serif;font-variant-numeric:tabular-nums lining-nums}
+.bar-label small{font-size:12px;font-weight:700;color:#E9C3E2}
+.bar>div{height:10px;border-radius:999px;background:rgba(0,0,0,.30);overflow:hidden}
+.bar>div>i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#FFFFFF,#FFC2F1);transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.bar output{font:700 16px/20px "Pretendard Variable",sans-serif;font-variant-numeric:tabular-nums lining-nums;text-align:right}
+@media(max-width:767px){.bar{grid-template-columns:88px minmax(0,1fr) 32px;gap:10px}}
 .total{margin-top:22px;color:#f3d6ee}
 footer{background:#5a0048;padding:30px 0 56px;color:#e9c3e2;font-size:14px}
 
@@ -243,12 +260,10 @@ footer{background:#5a0048;padding:30px 0 56px;color:#e9c3e2;font-size:14px}
 @media(max-width:760px) and (max-height:520px){.motion .card{position:relative;top:auto;min-height:300px}}
 .motion h2[data-scrub] span{opacity:.5;transition:opacity .25s linear}
 .motion h2[data-scrub] span.on{opacity:1}
-.motion .tags label{opacity:0}
-.motion .tags.in label{animation:drop 1s cubic-bezier(.3,.1,.2,1) both;animation-delay:calc(var(--i,0)*.11s)}
-.motion .tags.done label{opacity:1;animation:none}
-@keyframes drop{0%{opacity:0;transform:translateY(-46px) rotate(-16deg)}35%{opacity:1;transform:translateY(0) rotate(9deg)}60%{transform:rotate(-5deg)}82%{transform:rotate(2deg)}100%{opacity:1;transform:rotate(0)}}
-.motion .ring{transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.7,.2,1)}
-.motion .ring.in{transform:scaleX(1)}
+.motion .tags .yg{opacity:0;transform:translateY(6px)}
+.motion .tags.in .yg{animation:rack-in 280ms cubic-bezier(.2,.7,.2,1) both}
+.motion .tags.in .yg+.yg{animation-delay:60ms}
+@keyframes rack-in{to{opacity:1;transform:translateY(0)}}
 /* 터치 기기 */
 html{-webkit-tap-highlight-color:transparent}
 .hero-copy{padding-bottom:calc(44px + env(safe-area-inset-bottom))}
@@ -275,12 +290,7 @@ input,textarea,button{-webkit-appearance:none;appearance:none}
 fieldset.bad legend{color:#ffb4c8}
 .field-error{display:none;margin:-2px 0 12px;color:#ffb4c8;font-weight:700;font-size:15px}
 fieldset.bad .field-error{display:block}
-@media(max-width:760px){.tags{display:block}.yg+.yg{margin-top:26px}.yg{width:calc(var(--n) / 6 * 100%)}
-  .tagrow{gap:6px;padding:0 4px}.tags label{min-width:0}.tags label::before{width:14px;height:24px;border-width:4px}
-  .tag{aspect-ratio:3/5}.tag b{font-size:clamp(13px,4vw,16px)}.tag i{font-size:12px;margin-top:3px}
-  .tag em{width:15px;height:15px;line-height:15px;font-size:10px;margin-top:4px}
-  .tag{box-shadow:inset 0 0 0 2px rgba(255,255,255,.75),inset 0 0 0 3px rgba(60,60,70,.55),0 10px 18px rgba(0,0,0,.55)}}
-@media(prefers-reduced-motion:reduce){.tags label.hit .tag,.tags label.hit::before{animation:none}.bar div i{transition:none}}
+@media(prefers-reduced-motion:reduce){.motion .tags .yg,.motion .tags.in .yg{opacity:1;transform:none;animation:none}.tags label.hit .tag{animation:none}.bar>div>i{transition:none}}
 </style>
 </head>
 <body data-motion>
@@ -294,7 +304,7 @@ fieldset.bad .field-error{display:block}
       <span class="gate-go">화면을 누르면 입장합니다</span>
     </div>
     <div class="door l" aria-hidden="true"><div class="cover-face"><b>INVITATION</b><i class="a">D.LIGHT®</i></div></div>
-    <div class="door r" aria-hidden="true"><div class="cover-face"><b>INVITATION</b><i class="b">2026.12</i></div></div>
+    <div class="door r" aria-hidden="true"><div class="cover-face"><b>INVITATION</b><i class="b">2026/2027</i></div></div>
     <div class="seal" aria-hidden="true">D</div>
   </div>
 </div>
@@ -321,11 +331,11 @@ fieldset.bad .field-error{display:block}
 <div class="progress" id="prog" aria-hidden="true"></div>
 
 <header class="hero">
-  <div class="hero-top"><span>D.LIGHT®</span><span>2026.12</span></div>
+  <div class="hero-top"><span>D.LIGHT®</span><span>2026/2027</span></div>
   <div class="hero-art"><img class="heroimg" src="img/hero.jpg" alt="호루라기, 운동화, 퍼즐 조각, 깃발 모양 참이 달린 크롬 키링" width="2528" height="1696"></div>
   <canvas class="fx" id="fx" aria-hidden="true"></canvas>
   <div class="hero-copy">
-    <h1><span class="chrome">D.LIGHT</span><span class="chrome kr">팀 대항전</span><span class="yr">2026 연말 모임, 실내에서</span></h1>
+    <h1><span class="chrome">D.LIGHT</span><span class="chrome kr">팀 대항전</span><span class="yr">2026/2027 <br class="yr-break">연말 모임, 실내에서</span></h1>
     <p class="lede">가벼운 운동부터 협동 미션, 디자이너의 감각을 활용한 두뇌 게임까지!<br>팀을 이뤄 몸도 쓰고 머리도 쓰는 실내 팀 대항전을 준비해보려고 합니다.<br>잠시 시간 내셔서 수요조사 참여 부탁드립니다.</p>
     <a class="go" href="#survey">1분 수요조사 하기</a>
   </div>
@@ -435,10 +445,14 @@ const DATES = [
 const $ = (s) => document.querySelector(s);
 
 // 연도마다 고리 하나에 메달을 건다
+const two = (n) => String(n).padStart(2, "0");
 $("#tags").innerHTML = ["2026", "2027"].map((y) => {
-  const ds = DATES.filter((x) => x.y === y);
-  return `<div class="yg" style="--n:${ds.length}"><p class="yl">${y}</p><div class="ring" aria-hidden="true"></div><div class="tagrow">` + ds.map((x) =>
-    `<label style="--i:${DATES.indexOf(x)}"><input type="checkbox" name="date" value="${x.v}" aria-label="${y}년 ${x.d.replace("/", "월 ")}일 ${x.w}요일"><span class="tag${x.w === "일" ? " sun" : ""}"><b>${x.d}</b><i>${x.w}</i><em></em></span></label>`).join("") + "</div></div>";
+  const ds = DATES.filter((x) => x.y === y), racks = [];
+  for (let i = 0; i < ds.length; i += 3) racks.push(ds.slice(i, i + 3));  // 좁은 화면에서는 세 개씩 한 줄
+  return `<div class="yg"><p class="yl">${y}</p><div class="tagrow">` + racks.map((r) => `<div class="rack"><div class="ring" aria-hidden="true"></div>` + r.map((x) => {
+    const [m, d] = x.d.split("/");
+    return `<label><input type="checkbox" name="date" value="${x.v}" aria-label="${y}년 ${m}월 ${d}일 ${x.w}요일"><span class="tag${x.w === "일" ? " sun" : ""}" aria-hidden="true"><span class="tag-month">${two(m)}월</span><b>${two(d)}</b><i>${x.w}</i><em></em></span></label>`;
+  }).join("") + "</div>").join("") + "</div></div>";
 }).join("");
 // 날짜 태그를 걸 때 나는 키링 소리(누른 뒤에만 재생되므로 iOS·안드로이드에서도 난다)
 const sfx = {on: true, ctx: null, buf: null, el: null, live: new Set()};
@@ -465,8 +479,8 @@ $("#tags").addEventListener("change", (e) => {
   if (e.target.checked) jingle(0.94 + DATES.findIndex((x) => x.v === e.target.value) * 0.05); else jingle(0.8);
   const l = e.target.closest("label"); l.classList.remove("hit"); void l.offsetWidth; l.classList.add("hit");
 });
-$("#bars").innerHTML = DATES.map((x) =>
-  `<div class="bar"><span>${x.y === "2027" && x.d === "1/9" || x.d === "12/12" ? x.y + " " : ""}${x.d} ${x.w}</span><div><i data-d="${x.v}"></i></div><output data-n="${x.v}">–</output></div>`).join("");
+$("#bars").innerHTML = ["2026", "2027"].map((y) => `<div class="bar-group"><p class="bar-year">${y}</p>` + DATES.filter((x) => x.y === y).map((x) =>
+  `<div class="bar"><span class="bar-label">${x.d.split("/").map(two).join("/")}<small>${x.w}</small></span><div><i data-d="${x.v}"></i></div><output data-n="${x.v}">–</output></div>`).join("") + "</div>").join("");
 
 let saysShown = 6, lastTally = null;
 function paint(t) {
@@ -635,14 +649,14 @@ $("#f").addEventListener("submit", async (e) => {
     l.style.setProperty("--i", Array.prototype.indexOf.call(l.parentNode.children, l));
   });
   // 화면에 들어오면 한 번 켜는 것들
-  if (!("IntersectionObserver" in window)) { q(".card, .ring").forEach((el) => el.classList.add("in")); document.getElementById("tags").classList.add("in", "done"); return; }
+  if (!("IntersectionObserver" in window)) { q(".card").forEach((el) => el.classList.add("in")); document.getElementById("tags").classList.add("in"); return; }
   const once = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
     e.target.classList.add("in"); once.unobserve(e.target);
     if (e.target.id === "tags") setTimeout(() => e.target.classList.add("done"), 2200);  // animationend 를 놓쳤을 때 대비
   }), {threshold: 0, rootMargin: "0px 0px -8% 0px"});
-  q(".card, .ring, #tags").forEach((el) => once.observe(el));
-  document.getElementById("tags").addEventListener("animationend", (e) => { if (e.animationName === "drop" && e.target === [...e.currentTarget.querySelectorAll("label")].pop()) e.currentTarget.classList.add("done"); });
+  q(".card, #tags").forEach((el) => once.observe(el));
+
 
   const hero = document.querySelector(".hero"), art = document.querySelector(".hero-art .heroimg"),
     copy = document.querySelector(".hero-copy"), band = document.getElementById("band"),
