@@ -200,13 +200,22 @@ legend{font-size:21px;font-weight:800;padding:0;margin-bottom:6px}
 .tag.sun i{color:#650038}
 .tag em{position:relative;width:18px;height:18px;margin:0;border-radius:50%;background:rgba(21,21,27,.10);box-shadow:inset 0 0 0 1px rgba(21,21,27,.18)}
 .tags input:checked+.tag{background:linear-gradient(155deg,#FFF7FD 0%,#FFC9F2 20%,#FF74E4 44%,var(--accent) 62%,#FFB6EF 84%,#FFE4F8 100%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),inset 0 0 0 3px rgba(91,0,67,.25),0 0 16px rgba(255,0,200,.22),0 8px 16px rgba(0,0,0,.28)}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),inset 0 0 0 3px rgba(91,0,67,.25),0 0 8px 0 rgba(255,0,200,.10),0 8px 16px rgba(0,0,0,.28)}
 .tags input:checked+.tag .tag-month,.tags input:checked+.tag i{color:#15151B}
 .tags input:checked+.tag em{background:#111114;box-shadow:none}
 .tags input:checked+.tag em::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:9px;border-right:2px solid #FFFFFF;border-bottom:2px solid #FFFFFF;transform:rotate(45deg)}
 .tags input:focus-visible+.tag{outline:2px solid #FFFFFF;outline-offset:4px}
-.tags label.hit .tag{animation:tag-press 160ms ease-out}
-@keyframes tag-press{0%,100%{transform:translateY(0)}50%{transform:translateY(1px)}}
+.tag{transform-origin:50% -20px}
+.tags label::before{transform-origin:50% 7px}
+.tags label.hit .tag,.tags label.hit::before{animation:tag-swing 900ms both}
+@keyframes tag-swing{0%{transform:rotate(0);animation-timing-function:cubic-bezier(0,.55,.45,1)}12%{transform:rotate(5deg);animation-timing-function:cubic-bezier(.37,0,.63,1)}
+  36%{transform:rotate(-3.2deg);animation-timing-function:cubic-bezier(.37,0,.63,1)}60%{transform:rotate(1.8deg);animation-timing-function:cubic-bezier(.37,0,.63,1)}
+  84%{transform:rotate(-.7deg);animation-timing-function:cubic-bezier(.37,0,.63,1)}100%{transform:rotate(0)}}
+.tag::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0}
+.tags label.lit .tag::after{box-shadow:0 0 10px 0 rgba(255,18,200,.55),0 0 22px 2px rgba(255,0,200,.30),inset 0 0 0 1px rgba(255,238,251,.45);animation:tag-glow 600ms ease-out}
+.tags label.unlit .tag::after{box-shadow:0 0 8px 0 rgba(225,231,242,.30),0 0 16px 1px rgba(225,231,242,.14),inset 0 0 0 1px rgba(255,255,255,.28);animation:tag-glow 600ms ease-out}
+@keyframes tag-glow{0%{opacity:0}12%{opacity:1}35%{opacity:.45}100%{opacity:0}}
+@media(min-width:768px){.tags label.lit .tag::after{box-shadow:0 0 6px 0 rgba(255,18,200,.55),0 0 10px 0 rgba(255,0,200,.18),inset 0 0 0 1px rgba(255,238,251,.45)}}
 @media(max-width:767px){
   .tags{--medal-w:88px;--medal-h:124px;--medal-gap:16px;width:296px;margin-inline:0;flex-direction:column;gap:28px}
   .tagrow{display:grid;gap:24px}
@@ -296,7 +305,7 @@ input,textarea,button{-webkit-appearance:none;appearance:none}
 fieldset.bad legend{color:#ffb4c8}
 .field-error{display:none;margin:-2px 0 12px;color:#ffb4c8;font-weight:700;font-size:15px}
 fieldset.bad .field-error{display:block}
-@media(prefers-reduced-motion:reduce){.motion .tags .yg,.motion .tags.in .yg{opacity:1;transform:none;animation:none}.tags label.hit .tag{animation:none}.bar>div>i{transition:none}}
+@media(prefers-reduced-motion:reduce){.motion .tags .yg,.motion .tags.in .yg{opacity:1;transform:none;animation:none}.tags label.hit .tag,.tags label.hit::before,.tags label.lit .tag::after,.tags label.unlit .tag::after{animation:none}.bar>div>i{transition:none}}
 </style>
 </head>
 <body data-motion>
@@ -483,7 +492,9 @@ function jingle(rate) {
 }
 $("#tags").addEventListener("change", (e) => {
     if (e.target.checked) jingle(0.94 + DATES.findIndex((x) => x.v === e.target.value) * 0.05); else jingle(0.8);
-  const l = e.target.closest("label"); l.classList.remove("hit"); void l.offsetWidth; l.classList.add("hit");
+  const l = e.target.closest("label"); // 흔들리는 중에는 다시 시작하지 않는다(빛만 새로 켠다)
+  l.classList.remove("lit", "unlit"); void l.offsetWidth; l.classList.add(e.target.checked ? "lit" : "unlit");
+  if (!l.classList.contains("hit")) { l.classList.add("hit"); setTimeout(() => l.classList.remove("hit"), 920); }
 });
 $("#bars").innerHTML = ["2026", "2027"].map((y) => `<div class="bar-group"><p class="bar-year">${y}</p>` + DATES.filter((x) => x.y === y).map((x) =>
   `<div class="bar"><span class="bar-label">${x.d.split("/").map(two).join("/")}<small>${x.w}</small></span><div><i data-d="${x.v}"></i></div><output data-n="${x.v}">–</output></div>`).join("") + "</div>").join("");
