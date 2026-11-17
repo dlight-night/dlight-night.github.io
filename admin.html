@@ -4,7 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>D.LIGHT 팀 대항전 수요조사 집계</title>
+<title>D.LIGHT 팀 대항전 집계결과</title>
+<meta name="description" content="팀 대항전 수요조사 운영진용 실시간 집계입니다.">
+<meta property="og:title" content="D.LIGHT 팀 대항전 집계결과">
+<meta property="og:description" content="팀 대항전 수요조사 운영진용 실시간 집계입니다.">
+<meta property="og:image" content="https://dlight-night.github.io/img/og_admin.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://dlight-night.github.io/admin.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,6 +44,9 @@ button{font:inherit;color:inherit}
 #stamp small{display:block;font-size:14px;line-height:20px}
 .sync button{min-height:44px;flex-shrink:0;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:none;font-size:14px;font-weight:600;cursor:pointer}
 .sync button:hover{border-color:#fff}
+.golink{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:var(--magenta);color:#fff;font-size:14px;font-weight:700;text-decoration:none;flex-shrink:0;white-space:nowrap}
+.golink:hover{background:#ff4ad6}
+.golink:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .sync button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
 /* 응답 수 + 참석 의사 */
@@ -48,7 +60,11 @@ button{font:inherit;color:inherit}
 .row{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) 96px;gap:16px;align-items:center;min-height:28px}
 .row b{font-size:16px;font-weight:650;line-height:22px}
 .track{height:10px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;display:flex}
-.track i{display:block;height:100%;width:0;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.track i{display:block;height:100%;width:0;transition:width .6s cubic-bezier(.2,.7,.2,1) var(--d,0ms)}
+.bump{animation:bump .9s ease-out}
+@keyframes bump{0%{background:rgba(255,18,200,.28)}100%{background:rgba(255,18,200,0)}}
+.row,.drow{border-radius:8px}
+.drow output strong{transition:background .3s,color .3s}
 .track i.yes{background:var(--pink)}
 .track i.maybe{background:var(--magenta)}
 .track i.no{background:#7b6a7a}
@@ -97,6 +113,8 @@ button{font:inherit;color:inherit}
   .wrap{padding-top:24px}
   .sync{width:100%;gap:8px}
   #stamp{flex:1;min-width:0}
+  .golink{width:44px;padding:0;justify-content:center}
+  .golink span{display:none}
   .head,.grid,.says{grid-template-columns:1fr}
   #progs .row{grid-template-columns:1fr auto}
   .count{min-height:0;flex-direction:row;align-items:flex-end}
@@ -113,7 +131,7 @@ button{font:inherit;color:inherit}
   .drow output strong{min-width:0;padding:1px 6px}
   .cols>span:last-child>span:last-child{padding-right:6px}
 }
-@media(prefers-reduced-motion:reduce){.track i{transition:none}}
+@media(prefers-reduced-motion:reduce){.track i{transition:none}.bump{animation:none}.drow output strong{transition:none}}
 </style>
 </head>
 <body>
@@ -123,7 +141,7 @@ button{font:inherit;color:inherit}
       <p>D.LIGHT 팀 대항전</p>
       <h1>수요조사 집계</h1>
     </div>
-    <div class="sync" id="sync"><i></i><span id="stamp"><b id="when">불러오는 중입니다.</b><small>30초마다 자동으로 갱신합니다.</small></span><button type="button" id="reload">새로고침</button></div>
+    <div class="sync" id="sync"><i></i><span id="stamp"><b id="when">불러오는 중입니다.</b><small>30초마다 자동으로 갱신합니다.</small></span><a class="golink" href="./" target="_blank" rel="noopener" aria-label="투표 페이지 열기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg><span>투표 페이지</span></a><button type="button" id="reload">새로고침</button></div>
   </header>
 
   <section class="head">
@@ -168,36 +186,54 @@ const DATES = [
 const $ = (s) => document.querySelector(s);
 const pct = (n, t) => t ? Math.round(n / t * 100) : 0;
 
-$("#attend").innerHTML = ATTEND.map(([k, label]) => `<div class="row" data-k="${k}"><b>${label}</b><div class="track"><i class="${k}"></i></div><output>0명<small>0%</small></output></div>`).join("");
-$("#progs").innerHTML = PROGS.map(([k, label]) => `<div class="row" data-k="${k}"><b>${label}</b><div class="track"><i class="one"></i></div><output>0명<small>0%</small></output></div>`).join("");
+$("#attend").innerHTML = ATTEND.map(([k, label]) => `<div class="row" data-k="${k}"><b>${label}</b><div class="track"><i class="${k}"></i></div><output><span class="n">0</span>명<small><span class="p">0</span>%</small></output></div>`).join("");
+$("#progs").innerHTML = PROGS.map(([k, label]) => `<div class="row" data-k="${k}"><b>${label}</b><div class="track"><i class="one"></i></div><output><span class="n">0</span>명<small><span class="p">0</span>%</small></output></div>`).join("");
 $("#dates").innerHTML = ["2026", "2027"].map((y) => `<p class="year">${y}</p><div class="cols"><span>날짜</span><span></span><span><span><i class="yes"></i></span><span><i class="maybe"></i></span><span>합계</span></span></div>` +
   DATES.filter((x) => x.y === y).map((x) => `<div class="drow" data-v="${x.v}"><b>${x.d}<small>${x.w}</small></b><div class="track"><i class="yes"></i><i class="maybe"></i></div><output><span class="y">0</span><span class="m">0</span><strong>0</strong></output></div>`).join("")).join("");
 
+const still = matchMedia("(prefers-reduced-motion:reduce)").matches;
+const shown = new WeakMap();
+let first = true;
+// 숫자를 이전 값에서 새 값까지 올린다. 값이 바뀌었으면 true
+function count(el, to) {
+  const from = shown.has(el) ? shown.get(el) : 0; shown.set(el, to);
+  if (still || from === to) { el.textContent = to; return from !== to; }
+  const t0 = performance.now(), dur = 600;
+  const step = (now) => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step); return true;
+}
+// 처음에는 줄마다 조금씩 늦게 자라고, 갱신 때는 바뀐 줄만 반짝인다
+function touch(el, i, changed) {
+  el.style.setProperty("--d", first ? i * 40 + "ms" : "0ms");
+  if (!first && changed && !still) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+}
 function draw(t) {
-  $("#total").textContent = t.total;
-  for (const [k] of ATTEND) {
+  count($("#total"), t.total);
+  ATTEND.forEach(([k], i) => {
     const el = $(`#attend [data-k=${k}]`), n = t.attend[k] || 0;
+    const ch = count(el.querySelector(".n"), n); count(el.querySelector(".p"), pct(n, t.total)); touch(el, i, ch);
     el.querySelector("i").style.width = pct(n, t.total) + "%";
-    el.querySelector("output").innerHTML = `${n}명<small>${pct(n, t.total)}%</small>`;
-  }
+  });
   // 종목 비율은 참석 의사가 있는 사람(어려워요 제외) 기준
   const going = (t.attend.yes || 0) + (t.attend.maybe || 0);
   $("#prognote").textContent = `비율은 ‘이번엔 어려워요’를 제외한 ${going}명 기준입니다. 복수 선택 결과입니다.`;
-  for (const [k] of PROGS) {
+  PROGS.forEach(([k], i) => {
     const el = $(`#progs [data-k=${k}]`), n = t.progs[k] || 0;
+    const ch = count(el.querySelector(".n"), n); count(el.querySelector(".p"), pct(n, going)); touch(el, i + 3, ch);
     el.querySelector("i").style.width = pct(n, going) + "%";
-    el.querySelector("output").innerHTML = `${n}명<small>${pct(n, going)}%</small>`;
-  }
+  });
   const max = Math.max(1, ...DATES.map((x) => t.dates[x.v] || 0));
   const top = Math.max(...DATES.map((x) => t.dates[x.v] || 0));
-  for (const x of DATES) {
+  DATES.forEach((x, i) => {
     const el = $(`#dates [data-v="${x.v}"]`), sum = t.dates[x.v] || 0;
     const by = (t.dateBy && t.dateBy[x.v]) || {yes: sum, maybe: 0};
     const [iy, im] = el.querySelectorAll("i");
+    count(el.querySelector(".y"), by.yes); count(el.querySelector(".m"), by.maybe);
+    touch(el, i, count(el.querySelector("strong"), sum));
     iy.style.width = by.yes / max * 100 + "%"; im.style.width = by.maybe / max * 100 + "%";
-    el.querySelector(".y").textContent = by.yes; el.querySelector(".m").textContent = by.maybe; el.querySelector("strong").textContent = sum;
     el.classList.toggle("best", top > 0 && sum === top);
-  }
+  });
+  first = false;
   const says = t.comments || [];
   $("#saycount").textContent = says.length ? says.length + "개" : "";
   const ul = $("#says"); ul.textContent = "";
