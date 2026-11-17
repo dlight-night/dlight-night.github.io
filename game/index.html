@@ -22,7 +22,7 @@
 <link rel="preload" as="image" href="img/hero_tall.jpg" media="(max-width:767px)">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
-<script>if(!matchMedia('(prefers-reduced-motion:reduce)').matches){var c=document.createElement('canvas');document.documentElement.className='motion'+((c.getContext('webgl')||c.getContext('experimental-webgl'))?' gl':'')+(/[?&]nocover/.test(location.search)?'':' covering held')}</script>
+<script>if(!matchMedia('(prefers-reduced-motion:reduce)').matches){var c=document.createElement('canvas');document.documentElement.className='motion'+((c.getContext('webgl')||c.getContext('experimental-webgl'))?' gl':'')+(/[?&]nocover/.test(location.search)?'':' covering held viacover')}</script>
 <style>
 :root{
   --black:#000; --ink:#0d0010; --panel:#16041a; --plum:#5a0048; --magenta:#ff12c8; --pink:#ffc2f1; --soft:#e9c3e2;
@@ -44,33 +44,55 @@ button,input{font:inherit;color:inherit}
 
 /* ── 오프닝 표지 ── */
 .cover{display:none}
-html.covering{overflow:hidden}
-.covering .cover{display:grid;place-items:center;position:fixed;inset:0;z-index:60;background:#050505;overflow:hidden;cursor:pointer;transition:opacity .45s var(--ease)}
-.cover-bg{position:absolute;inset:0;opacity:0;animation:coverbg .8s 1s var(--ease) both}
+.covering .cover{display:grid;place-items:center;position:fixed;inset:0;z-index:60;background-color:#050505;overflow:hidden;cursor:pointer;transition:background-color .5s var(--ease),opacity .3s}
+.covering .dust{z-index:62}
+.cover-bg{position:absolute;inset:0;opacity:0}
 .cover-bg img{width:100%;height:100%;object-fit:cover;object-position:70% 50%}
 @media(min-width:768px){.cover-bg{left:10%}}
 @media(max-width:767px){.cover-bg img{object-position:50% 100%}}
+.go .cover-bg{animation:coverbg .7s .95s var(--ease) both}
 @keyframes coverbg{from{opacity:0;clip-path:inset(100% 0 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
-.cover-mark{position:relative;z-index:1;font:300 clamp(26px,4.4vw,58px)/1.3 var(--body);letter-spacing:.28em;color:#fff;transition:transform .45s var(--ease),opacity .4s,letter-spacing .45s var(--ease)}
-.cover-mark p{position:relative;z-index:1;animation:markjit .9s .35s steps(1) both}
-.cover-mark span{display:block;padding-left:.28em;opacity:0;animation:markin .4s .05s var(--ease) both}
-.cover-mark span + span{animation-delay:.16s}
-@keyframes markin{from{opacity:0;transform:translate3d(0,.3em,0)}to{opacity:1;transform:none}}
-@keyframes markjit{0%,100%{transform:none}12%{transform:translate3d(.04em,0,0)}25%{transform:none}40%{transform:translate3d(-.05em,0,0) skewX(-5deg)}48%{transform:none}65%{transform:translate3d(.03em,0,0)}78%{transform:none}}
-.cover-bars{position:absolute;left:0;top:-.2em;width:2.3em;height:3em;opacity:0;color:var(--magenta);
-  background:repeating-linear-gradient(180deg,currentColor 0 .09em,transparent .09em .27em);animation:bars .9s .35s steps(1) both}
+.cover-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.go .cover-flash{animation:flash .2s .36s ease-out forwards}
+@keyframes flash{0%{opacity:.38}100%{opacity:0}}
+.cm{--d:clamp(120px,24vw,360px);--sk:9px;--rgb:8px;--big:6;position:relative;z-index:1;display:flex;align-items:center;gap:.18em;font:800 calc(var(--d) * .22)/1 var(--display);letter-spacing:-.02em;color:#fff}
+@media(max-width:767px){.cm{--sk:4px;--rgb:4px;--big:4.5}}
+.go .cm{animation:shake .26s .36s steps(1) both}
+@keyframes shake{0%{transform:none}16%{transform:translate3d(calc(var(--sk) * -1),calc(var(--sk) * .66),0)}32%{transform:translate3d(calc(var(--sk) * .75),calc(var(--sk) * -.6),0)}48%{transform:translate3d(calc(var(--sk) * -.5),calc(var(--sk) * -.3),0)}64%{transform:translate3d(calc(var(--sk) * .3),calc(var(--sk) * .2),0)}80%,100%{transform:none}}
+.cm-dw{display:block;opacity:0}
+.go .cm-dw{animation:slam .28s .1s cubic-bezier(.3,0,.9,.6) both,dsplit .3s .38s steps(1) both}
+@keyframes slam{from{opacity:0;transform:scale(var(--big))}35%{opacity:1}to{opacity:1;transform:scale(1)}}
+@keyframes dsplit{0%{filter:drop-shadow(calc(var(--rgb) * -1) 0 var(--cyan)) drop-shadow(var(--rgb) 0 var(--magenta))}34%{filter:drop-shadow(calc(var(--rgb) * .6) 0 var(--cyan)) drop-shadow(calc(var(--rgb) * -.6) 0 var(--magenta))}67%{filter:drop-shadow(calc(var(--rgb) * -.25) 0 var(--cyan))}100%{filter:none}}
+.cm-d{display:inline-block;font-size:var(--d);line-height:1;letter-spacing:-.04em;transform-origin:0 0;will-change:transform}
+.cm-t{opacity:0}
+.go .cm-t{animation:snap .14s .62s steps(2) both}
+.go .cm-game{animation-delay:.68s}
+@keyframes snap{from{opacity:0;clip-path:inset(0 0 100% 0);transform:translate3d(0,.2em,0)}to{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
+.cover-bars{position:absolute;z-index:-1;left:-6%;top:50%;width:3.2em;height:2.2em;margin-top:-1.1em;opacity:0;color:var(--magenta);
+  background:repeating-linear-gradient(180deg,currentColor 0 .09em,transparent .09em .27em)}
+.go .cover-bars{animation:bars .62s .8s steps(1) forwards}
 @keyframes bars{
-  0%{opacity:1;color:var(--magenta);transform:translate3d(-.5em,-.5em,0) skewX(-20deg) scaleY(.45)}
-  12%{opacity:1;color:var(--magenta);transform:translate3d(.1em,0,0) skewX(-20deg)}
-  25%{opacity:0}
-  40%{opacity:1;color:#fff;transform:translate3d(4.2em,-.1em,0) skewX(-20deg) scaleY(.6)}
-  48%{opacity:0}
-  65%{opacity:1;color:var(--cyan);transform:translate3d(2em,0,0) skewX(-20deg) scaleX(1.2)}
-  78%,100%{opacity:0}
+  0%{opacity:.35;color:var(--magenta);transform:translate3d(0,0,0) skewX(-20deg)}
+  22%{opacity:0}
+  36%{opacity:.35;color:#fff;transform:translate3d(52%,0,0) skewX(-20deg) scaleY(.6)}
+  50%{opacity:0}
+  64%{opacity:.35;color:var(--cyan);transform:translate3d(110%,0,0) skewX(-20deg)}
+  82%,100%{opacity:0}
 }
-.cover.out{opacity:0;pointer-events:none}
-.cover.out .cover-mark{transform:scale(1.06);opacity:0;letter-spacing:.32em}
-.held .hero-copy>*{animation-play-state:paused}
+.cover.fly{background-color:transparent}
+.cover.fly .cover-bars,.cover.fly .cover-flash{display:none}
+.cover.gone{opacity:0;pointer-events:none}
+.motion.held .hero-copy>*{animation-play-state:paused}
+html.viacover .hero-copy>*{animation-duration:.3s}
+html.viacover .hero-copy .lede{animation-delay:40ms}
+html.viacover .hero-copy .facts{animation-delay:80ms}
+html.viacover .hero-copy .cta{animation-delay:120ms}
+/* 표지를 거쳐 들어올 때: 제목은 표지의 D 가 내려앉은 뒤 그 자리에서 이어진다 */
+html.viacover .hero-copy h1{animation:none;opacity:0}
+html.viacover.landed .hero-copy h1{opacity:1;animation:glitch 11s steps(1) 4s infinite}
+.viacover .hero h1 .rest{display:inline-block}
+.viacover.landed .hero h1 .rest{animation:restin .3s var(--ease) both}
+@keyframes restin{from{opacity:0;transform:translate3d(-.3em,0,0);clip-path:inset(0 100% 0 0)}to{opacity:1;transform:none;clip-path:inset(0 0 0 0)}}
 
 /* ── 위 줄 ── */
 .nav{position:fixed;z-index:30;top:0;left:0;right:0;transition:background .3s,backdrop-filter .3s}
@@ -93,7 +115,7 @@ html.covering{overflow:hidden}
 .hero-copy{padding:120px 0 144px;max-width:640px}
 .hero-copy .from{font:500 14px/20px var(--display);letter-spacing:.02em;color:var(--pink)}
 .hero h1{margin-top:18px;font-weight:900;font-size:clamp(96px,10.2vw,152px);line-height:.98;letter-spacing:-.05em;white-space:nowrap}
-.hero h1 b{font-family:var(--display);font-weight:800;letter-spacing:-.04em;margin-right:.06em}
+.hero h1 b{display:inline-block;line-height:1;font-family:var(--display);font-weight:800;letter-spacing:-.04em;margin-right:.06em}
 .hero .lede{margin-top:28px;font-size:clamp(17px,1.6vw,20px);line-height:1.6;color:#f3e6f1;max-width:25em}
 @media(min-width:768px){.hero-art{left:10%}}
 .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;padding:0;list-style:none}
@@ -189,6 +211,29 @@ h2{font-weight:900;font-size:clamp(36px,5.4vw,64px);line-height:1.1;letter-spaci
 .px{position:absolute;inset:0;z-index:1;display:grid;grid-template-columns:repeat(var(--cols,8),1fr);pointer-events:none}
 .px span{background:var(--c);opacity:1}
 .rv.in .px span{opacity:0;transition:opacity .18s steps(3) var(--t,0ms)}
+.game figure.deck{perspective:900px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;
+  background:radial-gradient(70% 55% at 50% 100%,rgba(255,18,200,.55),rgba(255,18,200,0) 70%),linear-gradient(180deg,#07000a,#1a0020)}
+.deck.grab{cursor:grabbing}
+.fan-sway,.fan{position:absolute;inset:0;transform-style:preserve-3d}
+.motion .fan-sway{animation:fansway 6s ease-in-out infinite alternate}
+.deck.off .fan-sway{animation-play-state:paused}
+@keyframes fansway{from{transform:rotateY(-5deg)}to{transform:rotateY(5deg)}}
+.fan{transform:rotateX(12deg) rotateY(var(--ry,-16deg));transition:transform .5s var(--ease)}
+.deck.grab .fan{transition:none}
+.pc{position:absolute;left:50%;bottom:28%;width:29%;margin-left:-14.5%;aspect-ratio:5/7;transform-origin:50% 130%;
+  transform:rotateZ(calc((var(--i) - 3) * var(--spread,11deg))) translateZ(calc(var(--i) * 5px)) translateY(var(--lift,0%));transition:transform .3s var(--ease);
+  border-radius:8px;border:1px solid rgba(255,255,255,.75);color:#101014;
+  background:linear-gradient(135deg,#fff 0%,#e7e9f0 26%,#9a9eac 50%,#f4f5f9 64%,#c3c6d1 84%,#fff 100%);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 18px rgba(255,18,200,.35)}
+.pc:hover{--lift:-16%}
+.pc b{position:absolute;left:9%;top:5%;font:800 clamp(11px,1.5vw,18px)/1 var(--display)}
+.pc i{position:absolute;inset:0;display:grid;place-items:center;font:800 clamp(24px,3.6vw,46px)/1 var(--display);font-style:normal;letter-spacing:-.04em;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+.pc::after{content:"";position:absolute;right:9%;bottom:6%;width:5px;height:5px;background:currentColor;box-shadow:-5px -5px currentColor,5px -5px currentColor}
+.pc.k{background:linear-gradient(135deg,#ffe3f8 0%,#ff9be6 30%,#b3128e 52%,#ffc2f1 68%,#ff5ad9 100%);color:#2a0030}
+.game .deck-hint{position:absolute;left:0;right:0;bottom:12px;z-index:2;margin:0;text-align:center;font-size:13px;line-height:18px;color:rgba(255,255,255,.7);pointer-events:none;transition:opacity .4s}
+.deck.grab .fan-sway{animation-play-state:paused}
+@media(max-width:767px){.pc{width:25%;margin-left:-12.5%;bottom:26%}}
+.deck.used .deck-hint{opacity:0}
+.game figure canvas.depth{position:absolute;inset:0;width:100%;height:100%;display:block}
 .fine{margin-top:28px;font-size:14px;line-height:20px;color:var(--mute)}
 
 /* ── 하루 흐름 ── */
@@ -268,6 +313,30 @@ form{position:relative;background:var(--panel);border:1px solid rgba(63,245,255,
 .agree input{appearance:none;width:24px;height:24px;border-radius:2px;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.4);display:grid;place-items:center;cursor:pointer}
 .agree input:checked{background:var(--magenta);border-color:var(--magenta)}
 .agree input:checked::after{content:"";width:11px;height:6px;border:solid #fff;border-width:0 0 2.5px 2.5px;transform:translateY(-1.5px) rotate(-45deg)}
+.quiz{display:grid;gap:8px}
+.quiz details{font-size:inherit;line-height:inherit;color:inherit;border:1px solid var(--line);background:rgba(0,0,0,.28)}
+.quiz details[open]{padding-bottom:16px}
+.quiz summary{width:auto;min-height:52px;padding:0 16px;gap:10px;font-size:15px;font-weight:700;line-height:22px;color:#fff;text-decoration:none}
+.quiz summary small{padding:2px 8px;border:1px solid rgba(63,245,255,.5);font-size:12px;font-weight:600;color:var(--cyan)}
+.quiz details>.q,.quiz details>.quiz-out{margin:14px 16px 0}
+.quiz-hint{font-size:14px;line-height:20px;color:var(--mute)}
+.q p{font-size:14px;line-height:20px;font-weight:600;color:var(--soft)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.opts label{position:relative;cursor:pointer}
+.opts input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.opts span{--cut:8px;min-height:48px;padding:6px 10px;text-align:center;font-size:15px;font-weight:600;line-height:1.3;border:1px solid var(--line);background:rgba(0,0,0,.4);clip-path:var(--chamfer);transition:background .2s,color .2s,border-color .2s}
+.opts label:hover span{border-color:rgba(63,245,255,.6)}
+.opts input:checked + span{background:rgba(63,245,255,.14);border-color:var(--cyan);color:var(--cyan);font-weight:800}
+.opts input:checked + span::before{content:"";display:inline-block;width:10px;height:5px;margin:-3px 8px 0 0;border:solid var(--cyan);border-width:0 0 2px 2px;transform:rotate(-45deg);vertical-align:middle}
+.opts span{display:flex;align-items:center;justify-content:center}
+.opts input:focus-visible + span{border-color:#fff;box-shadow:0 0 0 2px #fff}
+.quiz-out{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid rgba(255,18,200,.5);background:rgba(255,18,200,.08)}
+.quiz-out[hidden]{display:none}
+.quiz-out canvas{width:56px;height:56px;flex:none;background:#000;image-rendering:pixelated}
+.motion .quiz-out canvas{animation:sigilin .5s steps(5) both}
+@keyframes sigilin{from{opacity:0;transform:scale(1.6)}to{opacity:1;transform:none}}
+.quiz-out b{display:block;font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-.02em}
+.quiz-out span{display:block;font-size:14px;line-height:20px;color:#eadbe8}
 details{font-size:14px;line-height:20px;color:var(--mute)}
 details summary::before{content:"";width:0;height:0;border-left:6px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .2s}
 details[open] summary::before{transform:rotate(90deg)}
@@ -300,6 +369,12 @@ details dt{color:var(--soft)}
 .ticket dl{margin-top:36px;display:grid;gap:4px}
 .ticket dt{font-size:13px;font-weight:700;color:#4a4d57}
 .ticket dd{margin:0 0 12px;font-size:28px;font-weight:900;line-height:1.2;letter-spacing:-.03em;overflow-wrap:anywhere}
+.t-badge{display:flex;align-items:center;gap:14px;margin:2px 0 12px}
+.t-badge canvas{width:64px;height:64px;flex:none;background:#000;border-radius:6px;image-rendering:pixelated}
+.t-badge small{display:block;font-size:13px;font-weight:700;color:#4a4d57}
+.t-badge b{display:block;font-size:22px;font-weight:900;line-height:1.25;letter-spacing:-.03em}
+.t-badge span{display:block;margin-top:2px;font:800 12px/1.4 var(--display);letter-spacing:.02em;color:#1c1d22}
+.t-badge em{display:block;font-style:normal;font-size:12px;line-height:18px;color:#4a4d57}
 .ticket .t-cut{position:relative;margin:14px -32px 0;border-top:2px dashed rgba(0,0,0,.35)}
 .ticket .t-cut::before,.ticket .t-cut::after{content:"";position:absolute;top:0;width:32px;height:32px;border-radius:50%;background:#000;transform:translateY(-50%)}
 .ticket .t-cut::before{left:-16px}
@@ -334,6 +409,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .band{--bandh:56px}
   .hero h1{font-size:clamp(64px,20vw,96px)}
   .motion .hero-copy h1{animation:rise .9s var(--ease) 80ms both}
+  html.viacover .hero-copy h1{animation:none}
+  html.viacover.landed .hero-copy h1{animation:none}
   :root{--cut:12px}
   .game::before{background-size:12px 1px,1px 12px,12px 1px,1px 12px}
   .hero .lede{margin-top:16px}
@@ -367,7 +444,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <body>
 <div class="cover" id="cover" aria-hidden="true">
   <picture class="cover-bg"><source media="(max-width:767px)" srcset="img/cover_tall.jpg"><img src="img/cover.jpg" alt=""></picture>
-  <div class="cover-mark"><i class="cover-bars"></i><p><span>THE D</span><span>GAME</span></p></div>
+  <i class="cover-flash"></i>
+  <div class="cm"><i class="cover-bars"></i><span class="cm-t cm-the">THE</span><span class="cm-dw"><b class="cm-d chrome">D</b></span><span class="cm-t cm-game">GAME</span></div>
 </div>
 
 <div class="rail" aria-hidden="true"><i id="railbar"></i><b id="railnum">00</b></div>
@@ -392,7 +470,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="wrap">
       <div class="hero-copy">
         <p class="from">D.LIGHT 팀 대항전</p>
-        <h1><b class="chrome">D</b>의 게임</h1>
+        <h1><b class="chrome">D</b><span class="rest">의 게임</span></h1>
         <p class="lede">혼자 푸는 두뇌 게임부터 팀으로 겨루는 게임까지. 디라이트 멤버 여러분을 D의 게임에 초대합니다.</p>
         <div class="spacer"></div>
         <ul class="facts">
@@ -434,7 +512,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="group-head rv"><h3>팀전</h3><p>팀을 이뤄 함께 겨룹니다.</p></div>
         <div class="cards three">
           <article class="game rv">
-            <figure><img src="img/g_card.jpg" alt="" width="1000" height="1000" loading="lazy"></figure>
+            <figure class="deck" id="deck" role="img" aria-label="1부터 6, 그리고 K 카드 일곱 장"><div class="fan-sway"><div class="fan" id="fan"></div></div><p class="deck-hint" aria-hidden="true">좌우로 끌면 카드가 회전합니다.</p></figure>
             <div class="txt"><span class="kind team">팀전</span><h4>카드 대결</h4><p>1부터 6, 그리고 K. 카드 일곱 장으로 겨루는 팀 게임입니다.</p></div>
           </article>
           <article class="game rv" style="--d:90ms">
@@ -493,6 +571,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <input type="tel" id="phone" name="phone" aria-describedby="e-phone" inputmode="numeric" maxlength="13" placeholder="010-0000-0000" autocomplete="tel" required>
             <p class="err" id="e-phone"></p>
           </div>
+          <div class="quiz" id="quiz">
+            <details>
+              <summary>성향 배지 만들기 <small>선택</small></summary>
+              <div class="q"><p id="q1l">게임이 시작되면</p><div class="opts" role="radiogroup" aria-labelledby="q1l"><label><input type="radio" name="q1" value="0"><span>혼자 깊게 팝니다</span></label><label><input type="radio" name="q1" value="1"><span>같이 떠들며 풉니다</span></label></div></div>
+              <div class="q"><p id="q2l">더 자신 있는 쪽은</p><div class="opts" role="radiogroup" aria-labelledby="q2l"><label><input type="radio" name="q2" value="0"><span>눈썰미와 관찰</span></label><label><input type="radio" name="q2" value="1"><span>순발력과 몸</span></label></div></div>
+              <div class="q"><p id="q3l">승부처에서는</p><div class="opts" role="radiogroup" aria-labelledby="q3l"><label><input type="radio" name="q3" value="0"><span>계산하고 갑니다</span></label><label><input type="radio" name="q3" value="1"><span>감으로 지릅니다</span></label></div></div>
+              <div class="quiz-out" id="quizout" hidden aria-live="polite"><canvas id="sigil" width="56" height="56"></canvas><p><b id="typename"></b><span id="typedesc"></span></p></div>
+            </details>
+            <p class="quiz-hint">답하지 않아도 예약됩니다. 재미로 보는 것이며 팀 배정과는 무관합니다.</p>
+          </div>
           <div>
             <label class="agree"><input type="checkbox" id="agree" name="agree" aria-describedby="e-agree" required><span>개인정보 수집과 이용에 동의합니다.</span></label>
             <p class="err" id="e-agree"></p>
@@ -518,15 +606,39 @@ const LOCAL = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
 const API = LOCAL ? "api/reserve" : ENDPOINT;
 const $ = (s) => document.querySelector(s);
 const motion = document.documentElement.classList.contains("motion");
-// 오프닝 표지: 3.1초 뒤(또는 누르면) 걷히고, 그때 첫 화면이 켜진다
+// 오프닝 표지: 글꼴이 준비되면 시작 → D 가 내리꽂힘 → 1.75초 뒤(또는 누르거나 스크롤하면) D 가 첫 화면 제목 자리로 날아가 앉는다
 (() => {
   const root = document.documentElement, cover = $("#cover");
   if (!root.classList.contains("covering")) return;
-  let done = false;
-  const leave = () => { if (done) return; done = true; root.classList.remove("held"); root.style.overflow = "auto"; cover.classList.add("out"); dispatchEvent(new Event("dg-enter")); setTimeout(() => { root.classList.remove("covering"); root.style.overflow = ""; }, 460); };
+  const d = cover.querySelector(".cm-d"), dw = cover.querySelector(".cm-dw"), cm = cover.querySelector(".cm"), bg = cover.querySelector(".cover-bg"), words = [...cover.querySelectorAll(".cm-t")];
+  let done = false, started = false;
+  // 돌고 있는 애니메이션 값을 그대로 붙잡아 두고 애니메이션을 끈다(이후 transition 으로 움직이기 위해)
+  const hold = (el, prop) => { el.style[prop] = getComputedStyle(el)[prop]; el.style.animation = "none"; };
+  const finish = (ms) => { root.classList.add("landed"); root.classList.remove("held"); cover.classList.add("gone"); dust.setFree(false); setTimeout(() => root.classList.remove("covering"), ms); };
+  // 스크롤로 건너뛰면 D 를 날리지 않고 바로 본문을 보여 준다(움직이는 목적지를 쫓지 않게)
+  function skip() { if (done) return; done = true; cover.style.transition = "opacity .12s"; dispatchEvent(new Event("dg-enter")); finish(130); }
+  function leave() {
+    if (done) return; done = true;
+    hold(bg, "opacity"); words.forEach((w) => hold(w, "opacity")); dw.style.opacity = 1; dw.style.animation = "none"; cm.style.animation = "none";
+    const target = $(".hero h1 b"), a = d.getBoundingClientRect(), b = target.getBoundingClientRect(), k = parseFloat(getComputedStyle(target).fontSize) / parseFloat(getComputedStyle(d).fontSize);
+    void d.offsetWidth; cover.classList.add("fly"); dispatchEvent(new Event("dg-enter"));
+    bg.style.transition = "opacity .5s"; bg.style.opacity = 0;
+    words.forEach((w) => { w.style.transition = "opacity .22s steps(3)"; w.style.opacity = 0; });
+    d.style.transition = "transform .45s cubic-bezier(.7,0,.2,1)"; d.style.transform = `translate3d(${b.left - a.left}px,${b.top - a.top}px,0) scale(${k})`;
+    let landed = false; const flyAt = performance.now();
+    const land = (e) => { if (landed || (e && performance.now() - flyAt < 420)) return; landed = true; const q = d.getBoundingClientRect(), t2 = target.getBoundingClientRect(); window.__land = [q.left - t2.left, q.top - t2.top, q.width - t2.width].map((n) => +n.toFixed(1)); finish(320); };
+    d.addEventListener("transitionend", land); setTimeout(() => land(), 480);  // 전환 끝 신호가 안 오는 경우 대비
+  }
+  function start() {
+    if (started) return; started = true; cover.classList.add("go"); dust.setFree(true);
+    setTimeout(() => { if (!done) dust.boom(innerWidth / 2, innerHeight / 2); }, 370);  // D 가 내려앉는 순간 픽셀이 터진다
+    setTimeout(leave, 1750);
+  }
   cover.addEventListener("click", leave); addEventListener("keydown", leave, {once: true});
-  ["wheel", "touchmove"].forEach((n) => addEventListener(n, leave, {passive: true, once: true}));
-  setTimeout(leave, 2100);
+  ["wheel", "touchmove"].forEach((n) => addEventListener(n, skip, {passive: true, once: true}));
+  // 글꼴이 바뀌며 깜빡이지 않게 Unbounded 가 준비된 뒤 시작한다(최대 0.7초 대기). dust 가 만들어진 다음에 돌도록 한 박자 늦춘다
+  const ready = document.fonts && document.fonts.load ? document.fonts.load('800 100px "Unbounded"').catch(() => {}) : Promise.resolve();
+  Promise.race([ready, new Promise((r) => setTimeout(r, 700))]).then(() => setTimeout(start, 0));
 })();
 const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 
@@ -538,7 +650,7 @@ const dust = (() => {
   if (!motion) return {scroll() {}, burst() {}};
   const cv = document.createElement("canvas"); cv.className = "dust"; cv.setAttribute("aria-hidden", "true"); document.body.append(cv);
   const ctx = cv.getContext("2d"), P = [], big = wide.matches, MAX = big ? 160 : 72;
-  let rects = [], rectAt = 0, dirty = true;
+  let rects = [], rectAt = 0, dirty = true, free = false;
   const COL = ["63,245,255", "255,18,200", "255,194,241", "183,155,255", "255,255,255"];
   let W, H, dpr, running = false, last = 0;
   const size = () => { dpr = big ? Math.min(devicePixelRatio || 1, 2) : 1; W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; };
@@ -554,7 +666,7 @@ const dust = (() => {
     const dt = Math.min(.05, (now - last) / 1000); last = now;
     const f = dt * 60, drag = Math.pow(.985, f);
     // 글자·단추·폼 위에서는 가루를 그리지 않는다(8px 여유). 자리는 0.15초마다 다시 잰다
-    if (dirty || now - rectAt > 150) { dirty = false; rectAt = now; rects = [];
+    if (free) rects = []; else if (dirty || now - rectAt > 150) { dirty = false; rectAt = now; rects = [];
       document.querySelectorAll("h1,h2,h3,h4,p,.kind,.cta,.facts,form,.ticket,.nav .wrap,footer .wrap").forEach((el) => { const r = el.getBoundingClientRect(); if (r.bottom > -8 && r.top < H + 8 && r.width) rects.push([r.left - 8, r.top - 8, r.right + 8, r.bottom + 8]); }); }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
     for (let i = P.length - 1; i >= 0; i--) {
@@ -574,6 +686,12 @@ const dust = (() => {
   }
   return {
     count: () => P.length,
+    setFree(v) { free = v; dirty = true; },
+    boom(x, y) {
+      for (let i = 0; i < (big ? 90 : 50); i++) { const an = Math.random() * 6.283, sp = 3 + Math.random() * (big ? 13 : 8), z = .4 + Math.random() * .6, k = Math.random();
+        P.push({x, y, vx: Math.cos(an) * sp, vy: Math.sin(an) * sp * .75 - 1, u: big ? 3 + ((Math.random() * 7) | 0) : 2 + ((Math.random() * 3) | 0), z, c: COL[(Math.random() * COL.length) | 0], life: 0, max: .7 + Math.random() * .9, ph: Math.random() * 6.28, kind: k < .16 ? 1 : k < .26 ? 2 : 0}); }
+      if (!running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
+    },
     scroll(dy) {
       for (let j = 0; j < rects.length; j++) { rects[j][1] -= dy; rects[j][3] -= dy; }
       const n = Math.min(9, Math.abs(dy) / 14) | 0, up = dy > 0 ? -1 : 1;
@@ -786,6 +904,78 @@ document.querySelectorAll(".facts .lock").forEach((li) => {
   li.addEventListener("pointerenter", run); li.addEventListener("click", run); li.addEventListener("focus", run);
 });
 
+// 카드 대결: 3D 카드 일곱 장. 가로로 끌면 돌고, 스크롤로 다가오면 부채꼴로 펼쳐진다
+(() => {
+  const deck = $("#deck"), fan = $("#fan"); if (!deck) return;
+  ["1", "2", "3", "4", "5", "6", "K"].forEach((t, i) => { const c = document.createElement("div"); c.className = "pc" + (t === "K" ? " k" : ""); c.style.setProperty("--i", i);
+    const b = document.createElement("b"), n = document.createElement("i"); b.textContent = t; n.textContent = t; c.append(b, n); fan.append(c); });
+  let ry = -16, sx = 0, start = 0, down = false;
+  deck.addEventListener("pointerdown", (e) => { down = true; sx = e.clientX; start = ry; deck.classList.add("grab"); deck.setPointerCapture(e.pointerId); });
+  deck.addEventListener("pointermove", (e) => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 8) deck.classList.add("used"); ry = Math.max(-40, Math.min(40, start + dx * .3)); fan.style.setProperty("--ry", ry + "deg"); });
+  const up = () => { down = false; deck.classList.remove("grab"); };
+  deck.addEventListener("pointerup", up); deck.addEventListener("pointercancel", up);
+  // 화면 아래에서 가운데로 올라오는 동안 2도 → 12도로 펼친다
+  let vis = false, tk = false;
+  const spread = () => { tk = false; if (!vis) return; const r = deck.getBoundingClientRect(), k = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight * .55))); fan.style.setProperty("--spread", (motion ? 2 + 10 * k : 12) + "deg"); };
+  if ("IntersectionObserver" in window) new IntersectionObserver((es) => { vis = es[0].isIntersecting; deck.classList.toggle("off", !vis); spread(); }).observe(deck); else { vis = true; }
+  addEventListener("scroll", () => { if (!tk && vis) { tk = true; requestAnimationFrame(spread); } }, {passive: true});
+  spread();
+})();
+
+// 게임 그림 입체: 깊이 지도로 그림을 밀어 입체처럼 보이게 한다. WebGL 캔버스 한 개가 지금 보는 카드(커서를 올린 카드, 휴대폰은 화면 가운데 카드)로 옮겨 다닌다
+(() => {
+  if (!document.documentElement.classList.contains("gl") || !motion) return;
+  const figs = [...document.querySelectorAll(".game figure")].filter((f) => f.querySelector("img"));
+  if (!figs.length) return;
+  const cv = document.createElement("canvas"); cv.className = "depth";
+  const gl = cv.getContext("webgl", {antialias: false, alpha: false}); if (!gl) return;
+  const VS = "attribute vec2 p;varying vec2 v;void main(){v=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}";
+  const FS = `precision mediump float;varying vec2 v;uniform sampler2D uImg,uDepth;uniform vec4 uFit;uniform vec2 uMouse;uniform float uAmt;
+void main(){vec2 uv=uFit.xy+v*uFit.zw;float d=texture2D(uDepth,uv).r;vec2 o=uMouse*(d-.3)*.05*uAmt;
+vec3 c=vec3(texture2D(uImg,uv+o+vec2(.0015*uAmt,0.)).r,texture2D(uImg,uv+o).g,texture2D(uImg,uv+o-vec2(.0015*uAmt,0.)).b);gl_FragColor=vec4(c,1.);}`;
+  const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
+  const a = sh(gl.VERTEX_SHADER, VS), b = sh(gl.FRAGMENT_SHADER, FS), pr = gl.createProgram(); if (!a || !b) return;
+  gl.attachShader(pr, a); gl.attachShader(pr, b); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return; gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ["uImg", "uDepth", "uFit", "uMouse", "uAmt"].forEach((n) => { U[n] = gl.getUniformLocation(pr, n); }); gl.uniform1i(U.uImg, 0); gl.uniform1i(U.uDepth, 1);
+  const mk = (img) => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]].forEach(([k, val]) => gl.texParameteri(gl.TEXTURE_2D, k, val)); return t; };
+  const load = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+  const cache = new Map(), hover = matchMedia("(hover:hover)").matches;
+  let cur = null, raf = 0, mx = 0, my = 0, tx = 0, ty = 0, amt = 0, want = 0, t0 = performance.now();
+  async function use(fig) {
+    if (fig === cur) return; cur = fig; want = 0;
+    if (!fig) return;
+    const img = fig.querySelector("img"), src = img.getAttribute("src");
+    try {
+      if (!cache.has(src)) { const [i, d] = await Promise.all([load(src), load(src.replace(".jpg", "_depth.jpg"))]); cache.set(src, {i: mk(i), d: mk(d), w: i.naturalWidth, h: i.naturalHeight}); }
+    } catch (e) { if (cur === fig) cur = null; return; }
+    if (cur !== fig) return;
+    const c = cache.get(src), dpr = Math.min(devicePixelRatio || 1, 1.5), W = fig.clientWidth, H = fig.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); gl.viewport(0, 0, cv.width, cv.height);
+    const sc = Math.max(W / c.w, H / c.h), fx = W / (c.w * sc), fy = H / (c.h * sc); gl.uniform4f(U.uFit, (1 - fx) / 2, (1 - fy) / 2, fx, fy);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, c.i); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, c.d);
+    amt = 0; want = 1; fig.insertBefore(cv, img.nextSibling); cancelAnimationFrame(raf); raf = requestAnimationFrame(draw);
+  }
+  function draw(now) {
+    if (!cur) { if (cv.parentNode) cv.remove(); return; }
+    const t = (now - t0) / 1000, sway = hover ? .12 : .7;
+    mx += (tx + Math.sin(t * .9) * sway - mx) * .08; my += (ty + Math.cos(t * .7) * sway * .6 - my) * .08; amt += (want - amt) * .08;
+    gl.uniform2f(U.uMouse, -mx, -my); gl.uniform1f(U.uAmt, amt); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    raf = requestAnimationFrame(draw);
+  }
+  window.__card3d = () => ({on: !!cur, src: cur ? cur.querySelector("img").getAttribute("src") : null, mx: +mx.toFixed(3), amt: +amt.toFixed(2)});
+  if (hover) figs.forEach((fig) => { const card = fig.closest(".game");
+    card.addEventListener("pointerenter", () => use(fig));
+    card.addEventListener("pointermove", (e) => { const r = fig.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width * 2 - 1; ty = (e.clientY - r.top) / r.height * 2 - 1; });
+    card.addEventListener("pointerleave", () => { tx = ty = 0; use(null); }); });
+  else { let tk = false; const near = () => { tk = false; let best = null, gap = innerHeight * .45;
+      figs.forEach((f) => { const r = f.getBoundingClientRect(), g = Math.abs((r.top + r.bottom) / 2 - innerHeight / 2); if (g < gap) { gap = g; best = f; } }); use(best); };
+    addEventListener("scroll", () => { if (!tk) { tk = true; requestAnimationFrame(near); } }, {passive: true}); near(); }
+  cv.addEventListener("webglcontextlost", () => { cur = null; cancelAnimationFrame(raf); if (cv.parentNode) cv.remove(); });
+})();
+
 // 예약 인원
 function showCount(n) { $("#countbox").hidden = false; const el = $("#count"), from = +el.textContent || 0; if (!motion) { el.textContent = n; return; }
   const t0 = performance.now(); const step = (now) => { const k = Math.min(1, (now - t0) / 700); el.textContent = Math.round(from + (n - from) * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
@@ -795,15 +985,47 @@ if (API) fetch(API, {cache: "no-store"}).then((r) => r.json()).then((t) => { if 
 const phone = $("#phone");
 phone.addEventListener("input", () => { const d = phone.value.replace(/\D/g, "").slice(0, 11); phone.value = d.length < 4 ? d : d.length < 8 ? d.slice(0, 3) + "-" + d.slice(3) : d.slice(0, 3) + "-" + d.slice(3, d.length === 10 ? 6 : 7) + "-" + d.slice(d.length === 10 ? 6 : 7); });
 
+// 플레이 성향(재미용, 팀 배정과 무관): 세 문항의 답으로 여덟 가지 중 하나
+const TYPES = [
+  {n: "픽셀 탐정", d: "작은 차이를 끝까지 찾아냅니다.", c: "#3ff5ff"},
+  {n: "직감 스포이드", d: "보는 순간 답을 집어냅니다.", c: "#ff12c8"},
+  {n: "정밀 펜툴", d: "한 번에 정확하게 움직입니다.", c: "#b79bff"},
+  {n: "프리핸드", d: "생각보다 손이 먼저 나갑니다.", c: "#ffc2f1"},
+  {n: "그리드 설계자", d: "팀의 판을 짜는 사람입니다.", c: "#3ff5ff"},
+  {n: "무드보드 메이커", d: "분위기로 팀을 이끕니다.", c: "#ff12c8"},
+  {n: "레이어 지휘자", d: "순서를 정하고 팀을 움직입니다.", c: "#b79bff"},
+  {n: "컬러 폭죽", d: "팀의 기세를 올립니다.", c: "#ffc2f1"},
+];
+// 픽셀 배지: 성향마다 정해진 좌우 대칭 7×7 무늬
+function sigil(cv, type) {
+  const ctx = cv.getContext("2d"), u = cv.width / 8, o = u / 2; let seed = 7 + type * 9973;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  for (let y = 0; y < 7; y++) for (let x = 0; x < 4; x++) {
+    const r = rnd(); if (r > .58 && !(x === 3 && y === 3)) continue;
+    ctx.fillStyle = x === 3 && y === 3 ? "#fff" : r < .12 ? "#fff" : TYPES[type].c;
+    ctx.fillRect(o + x * u, o + y * u, u, u); ctx.fillRect(o + (6 - x) * u, o + y * u, u, u);
+  }
+}
+const quizType = () => { const a = [1, 2, 3].map((i) => { const c = document.querySelector(`input[name=q${i}]:checked`); return c ? +c.value : -1; }); return a.includes(-1) ? null : a[0] * 4 + a[1] * 2 + a[2]; };
+const missionCode = (type, no) => "D" + type + "-" + ((no ? no * 7919 : (Math.random() * 46000) | 0) + type * 5407 + 4242).toString(36).toUpperCase().slice(-3).padStart(3, "0");
+if ($("#quiz")) $("#quiz").addEventListener("change", () => {
+  const t = quizType(); if (t == null) return;
+  $("#quizout").hidden = false; $("#typename").textContent = TYPES[t].n; $("#typedesc").textContent = TYPES[t].d;
+  const cv = $("#sigil"); cv.style.animation = "none"; void cv.offsetWidth; cv.style.animation = ""; sigil(cv, t);
+});
+
 const esc = (s) => s.replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 function ticket(t, fresh) {
   $("#formbox").innerHTML = `<div class="ticket-wrap${fresh ? " issue" : ""}"><div class="slot"></div><div class="ticket-clip"><div class="ticket-in"><div class="ticket" id="ticket" tabindex="-1">
     <div class="t-top"><p class="t-title"><b>D</b>의 게임</p><p class="t-no">${t.no ? "No. " + String(t.no).padStart(3, "0") : "샘플"}</p></div>
     <dl><dt>닉네임</dt><dd>${esc(t.nick)}</dd><dt>성함</dt><dd>${esc(t.name)}</dd></dl>
+    ${TYPES[t.type] ? `<div class="t-badge"><canvas id="t-sigil" width="64" height="64"></canvas><p><small>재미로 보는 성향 배지</small><b>${TYPES[t.type].n}</b><span>배지 코드 ${esc(t.code || "")}</span><em>팀 배정과는 무관합니다.</em></p></div>` : ""}
     <div class="t-cut"></div>
     <p class="t-foot">${t.no ? "예약이 접수되었습니다. 일정과 장소가 정해지면 안내드리겠습니다." : "샘플 화면이라 예약이 저장되지 않았습니다."}</p>
   </div></div></div></div><p class="after">다른 분의 예약을 이어서 받으려면 <button type="button" id="again">새로 예약하기</button>를 눌러 주시기 바랍니다.</p>`;
   const el = $("#ticket");
+  if (TYPES[t.type]) sigil($("#t-sigil"), t.type);
   if (fresh) { $("#reserve").scrollIntoView({block: "start"}); el.focus({preventScroll: true}); }
   if (motion && matchMedia("(hover:hover)").matches) {
     el.parentElement.addEventListener("pointermove", (e) => { const r = el.getBoundingClientRect(); el.style.setProperty("--ry", ((e.clientX - r.left) / r.width - .5) * 10 + "deg"); el.style.setProperty("--rx", (.5 - (e.clientY - r.top) / r.height) * 8 + "deg"); });
@@ -816,7 +1038,7 @@ const saved = store.get("dg-ticket"); if (saved && saved.nick) ticket(saved);
 const f = $("#f");
 if (f) f.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const v = {nick: $("#nick").value.trim(), name: $("#name").value.trim(), phone: phone.value.replace(/\D/g, ""), agree: $("#agree").checked};
+  const v = {nick: $("#nick").value.trim(), name: $("#name").value.trim(), phone: phone.value.replace(/\D/g, ""), agree: $("#agree").checked, type: quizType()};
   const bad = [];
   const check = (id, ok, text) => { const el = $("#" + id); $("#e-" + id).textContent = ok ? "" : text; el.setAttribute("aria-invalid", ok ? "false" : "true"); if (!ok) bad.push(el); };
   check("nick", v.nick, "닉네임을 입력해 주시기 바랍니다.");
@@ -825,11 +1047,11 @@ if (f) f.addEventListener("submit", async (e) => {
   check("agree", v.agree, "개인정보 수집과 이용에 동의해 주시기 바랍니다.");
   if (bad.length) { bad[0].focus(); return; }
   const btn = $("#btn"), msg = $("#msg"); msg.textContent = "";
-  if (!API) { ticket({nick: v.nick, name: v.name}, true); return; }  // 샘플: 저장 없이 화면만
+  if (!API) { ticket({nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : missionCode(v.type, 0)}, true); return; }  // 샘플: 저장 없이 화면만
   btn.disabled = true; btn.textContent = "보내는 중입니다";
   try {
     const t = await (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(v)})).json();
-    if (t.ok) { const tk = {no: t.no, nick: v.nick, name: v.name}; store.set("dg-ticket", tk); showCount(t.count); ticket(tk, true); return; }
+    if (t.ok) { const tk = {no: t.no, nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : missionCode(v.type, t.no)}; store.set("dg-ticket", tk); showCount(t.count); ticket(tk, true); return; }
     msg.textContent = t.error === "dup" ? "이미 예약된 전화번호입니다." : "입력 내용을 다시 확인해 주시기 바랍니다.";
   } catch (err) { msg.textContent = "예약을 보내지 못했습니다. 잠시 뒤 다시 시도해 주시기 바랍니다."; }
   btn.disabled = false; btn.textContent = "예약하기";
