@@ -14,13 +14,15 @@
 <link rel="icon" href="img/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="img/cover.jpg" media="(min-width:768px)">
+<link rel="preload" as="image" href="img/cover_tall.jpg" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero.jpg" media="(min-width:768px)">
 <link rel="preload" as="image" href="img/hero_depth.jpg" media="(min-width:768px)">
 <link rel="preload" as="image" href="img/hero_tall_depth.jpg" media="(max-width:767px)">
 <link rel="preload" as="image" href="img/hero_tall.jpg" media="(max-width:767px)">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
-<script>if(!matchMedia('(prefers-reduced-motion:reduce)').matches){var c=document.createElement('canvas');document.documentElement.className='motion'+((c.getContext('webgl')||c.getContext('experimental-webgl'))?' gl':'')}</script>
+<script>if(!matchMedia('(prefers-reduced-motion:reduce)').matches){var c=document.createElement('canvas');document.documentElement.className='motion'+((c.getContext('webgl')||c.getContext('experimental-webgl'))?' gl':'')+(/[?&]nocover/.test(location.search)?'':' covering held')}</script>
 <style>
 :root{
   --black:#000; --ink:#0d0010; --panel:#16041a; --plum:#5a0048; --magenta:#ff12c8; --pink:#ffc2f1; --soft:#e9c3e2;
@@ -40,6 +42,36 @@ button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid #fff;outline-offset:3px}
 .chrome{background:linear-gradient(180deg,#fff 0%,#f1f2f6 30%,#8f93a0 50%,#2f3138 52%,#b9bcc7 74%,#fff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 
+/* ── 오프닝 표지 ── */
+.cover{display:none}
+html.covering{overflow:hidden}
+.covering .cover{display:grid;place-items:center;position:fixed;inset:0;z-index:60;background:#050505;overflow:hidden;cursor:pointer;transition:opacity .45s var(--ease)}
+.cover-bg{position:absolute;inset:0;opacity:0;animation:coverbg .8s 1s var(--ease) both}
+.cover-bg img{width:100%;height:100%;object-fit:cover;object-position:70% 50%}
+@media(min-width:768px){.cover-bg{left:10%}}
+@media(max-width:767px){.cover-bg img{object-position:50% 100%}}
+@keyframes coverbg{from{opacity:0;clip-path:inset(100% 0 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+.cover-mark{position:relative;z-index:1;font:300 clamp(26px,4.4vw,58px)/1.3 var(--body);letter-spacing:.28em;color:#fff;transition:transform .45s var(--ease),opacity .4s,letter-spacing .45s var(--ease)}
+.cover-mark p{position:relative;z-index:1;animation:markjit .9s .35s steps(1) both}
+.cover-mark span{display:block;padding-left:.28em;opacity:0;animation:markin .4s .05s var(--ease) both}
+.cover-mark span + span{animation-delay:.16s}
+@keyframes markin{from{opacity:0;transform:translate3d(0,.3em,0)}to{opacity:1;transform:none}}
+@keyframes markjit{0%,100%{transform:none}12%{transform:translate3d(.04em,0,0)}25%{transform:none}40%{transform:translate3d(-.05em,0,0) skewX(-5deg)}48%{transform:none}65%{transform:translate3d(.03em,0,0)}78%{transform:none}}
+.cover-bars{position:absolute;left:0;top:-.2em;width:2.3em;height:3em;opacity:0;color:var(--magenta);
+  background:repeating-linear-gradient(180deg,currentColor 0 .09em,transparent .09em .27em);animation:bars .9s .35s steps(1) both}
+@keyframes bars{
+  0%{opacity:1;color:var(--magenta);transform:translate3d(-.5em,-.5em,0) skewX(-20deg) scaleY(.45)}
+  12%{opacity:1;color:var(--magenta);transform:translate3d(.1em,0,0) skewX(-20deg)}
+  25%{opacity:0}
+  40%{opacity:1;color:#fff;transform:translate3d(4.2em,-.1em,0) skewX(-20deg) scaleY(.6)}
+  48%{opacity:0}
+  65%{opacity:1;color:var(--cyan);transform:translate3d(2em,0,0) skewX(-20deg) scaleX(1.2)}
+  78%,100%{opacity:0}
+}
+.cover.out{opacity:0;pointer-events:none}
+.cover.out .cover-mark{transform:scale(1.06);opacity:0;letter-spacing:.32em}
+.held .hero-copy>*{animation-play-state:paused}
+
 /* ── 위 줄 ── */
 .nav{position:fixed;z-index:30;top:0;left:0;right:0;transition:background .3s,backdrop-filter .3s}
 .nav.solid{background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
@@ -58,7 +90,7 @@ button,input{font:inherit;color:inherit}
 .gl .hero-art img{opacity:0;animation:none}
 .hero-art img{width:100%;height:100%;object-fit:cover;object-position:70% 50%}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.65) 42%,rgba(0,0,0,0) 70%),linear-gradient(0deg,#000 0%,rgba(0,0,0,0) 26%)}
-.hero-copy{padding:120px 0 72px;max-width:640px}
+.hero-copy{padding:120px 0 144px;max-width:640px}
 .hero-copy .from{font:500 14px/20px var(--display);letter-spacing:.02em;color:var(--pink)}
 .hero h1{margin-top:18px;font-weight:900;font-size:clamp(96px,10.2vw,152px);line-height:.98;letter-spacing:-.05em;white-space:nowrap}
 .hero h1 b{font-family:var(--display);font-weight:800;letter-spacing:-.04em;margin-right:.06em}
@@ -67,6 +99,12 @@ button,input{font:inherit;color:inherit}
 .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;padding:0;list-style:none}
 .facts li{display:flex;gap:8px;align-items:baseline;padding:9px 16px;border:1px solid rgba(63,245,255,.4);border-radius:3px;background:rgba(0,0,0,.35);font-size:14px;line-height:20px}
 .facts li b{font-weight:700;color:var(--cyan)}
+.facts .lock{cursor:help;align-items:center;outline:none}
+.facts .lock svg{color:var(--magenta);flex:none}
+.facts .lock span{font-variant-numeric:tabular-nums;min-width:4.6em}
+.facts .lock:focus-visible{border-color:#fff}
+.motion .facts .lock.run svg{animation:lockshake .5s steps(2) both}
+@keyframes lockshake{0%,100%{transform:none}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-1px)}}
 .cta{display:inline-flex;align-items:center;gap:10px;margin-top:32px;min-height:60px;padding:0 30px;border-radius:0;--cut:12px;clip-path:var(--chamfer);background:var(--magenta);color:#000;font-size:18px;font-weight:800;text-decoration:none;transition:transform .25s var(--ease),background .2s}
 .cta:hover{background:#ff4ad6;transform:translateY(-2px)}
 .cta svg{transition:transform .25s var(--ease)}
@@ -88,10 +126,23 @@ button,input{font:inherit;color:inherit}
 @keyframes rise{from{opacity:0;transform:translate3d(0,28px,0)}to{opacity:1;transform:none}}
 
 /* ── 흐르는 띠 ── */
-.band{background:var(--magenta);overflow:hidden;padding:18px 0}
-.band div{display:flex;width:max-content;gap:0;font-weight:900;font-size:clamp(22px,3vw,34px);line-height:1.2;letter-spacing:-.03em;white-space:nowrap}
-.band span{display:inline-flex;align-items:center;gap:28px;padding-right:28px}
-.band span::after{content:"";width:12px;height:12px;background:#000;transform:rotate(45deg)}
+.band{--bandh:72px;position:relative;z-index:2;height:var(--bandh);margin-top:calc(-1 * var(--bandh));display:flex;align-items:center;overflow:hidden;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.10) 0 1px,transparent 1px 3px),linear-gradient(90deg,rgba(255,18,200,.22),rgba(63,245,255,.12) 50%,rgba(255,18,200,.22));
+  -webkit-backdrop-filter:blur(5px) saturate(1.5);backdrop-filter:blur(5px) saturate(1.5);
+  border-top:1px solid rgba(63,245,255,.55);border-bottom:1px solid rgba(255,18,200,.7)}
+.band::before,.band::after{content:"";position:absolute;left:0;width:200%;height:4px;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(63,245,255,.9) 0 4px,transparent 4px 12px,rgba(255,18,200,.9) 12px 16px,transparent 16px 28px)}
+.band::before{top:3px}
+.band::after{bottom:3px}
+.motion .band::before{animation:pxrun 5s linear infinite}
+.motion .band::after{animation:pxrun 5s linear infinite reverse}
+.band.off::before,.band.off::after{animation-play-state:paused}
+@keyframes pxrun{to{transform:translateX(-56px)}}
+.band div{display:flex;width:max-content;gap:0;font-weight:900;font-size:clamp(22px,3vw,34px);line-height:1.2;letter-spacing:-.03em;white-space:nowrap;
+  color:rgba(255,255,255,.95);text-shadow:1px 0 rgba(63,245,255,.75),-1px 0 rgba(255,18,200,.9)}
+.band span{display:inline-flex;align-items:center;gap:30px;padding-right:30px}
+.band span:nth-child(even){color:transparent;-webkit-text-stroke:1px var(--cyan);text-shadow:none}
+.band span::after{content:"";flex:none;width:6px;height:6px;margin-right:12px;background:var(--cyan);box-shadow:12px 0 var(--cyan),6px 6px #fff,0 12px var(--cyan),12px 12px var(--cyan);transform:translateY(-6px);-webkit-text-stroke:0}
 .motion .band div{animation:slide 40s linear infinite}
 .band.off div{animation-play-state:paused}
 @keyframes slide{to{transform:translateX(-50%)}}
@@ -141,7 +192,7 @@ h2{font-weight:900;font-size:clamp(36px,5.4vw,64px);line-height:1.1;letter-spaci
 .fine{margin-top:28px;font-size:14px;line-height:20px;color:var(--mute)}
 
 /* ── 하루 흐름 ── */
-.day{position:relative;overflow:hidden;background:#12001a}
+.day{position:relative;overflow:hidden;overflow:clip;background:#12001a}
 .day::before{content:"";position:absolute;left:-40%;right:-40%;bottom:-2px;height:86%;pointer-events:none;opacity:.85;
   background:linear-gradient(rgba(255,18,200,.7) 1px,transparent 1px) 0 0/100% 56px,linear-gradient(90deg,rgba(63,245,255,.5) 1px,transparent 1px) 50% 0/56px 100%;
   transform:perspective(520px) rotateX(64deg);transform-origin:50% 100%;-webkit-mask:linear-gradient(transparent 0%,#000 60%);mask:linear-gradient(transparent 0%,#000 60%)}
@@ -149,6 +200,41 @@ h2{font-weight:900;font-size:clamp(36px,5.4vw,64px);line-height:1.1;letter-spaci
 .day.off::before{animation-play-state:paused}
 @keyframes floor{to{background-position:0 56px,50% 0}}
 .day .wrap{position:relative;z-index:1}
+.tt{margin-top:56px;display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:64px;align-items:start}
+.clock{position:sticky;top:96px;aspect-ratio:1;width:100%;max-width:420px}
+.clock svg{display:block;width:100%;height:100%;overflow:visible}
+.clock .seg{fill:none;stroke:var(--c);stroke-width:30;opacity:.5;cursor:pointer;transform-origin:200px 200px;transition:opacity .25s,transform .3s var(--ease),stroke-width .3s var(--ease)}
+.clock .seg.on{opacity:1;transform:scale(1.07);stroke-width:36;filter:drop-shadow(0 0 10px var(--c))}
+.clock .hand{transform-origin:200px 200px;transform:rotate(var(--a,0deg));transition:transform .5s cubic-bezier(.3,1.3,.5,1)}
+.clock-center{position:absolute;left:50%;top:50%;width:46%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.clock-center b{display:block;font:500 13px/1.3 var(--display);letter-spacing:.02em;color:var(--cyan)}
+.clock-center span{display:block;margin-top:8px;font-weight:900;font-size:22px;line-height:1.2;letter-spacing:-.03em}
+.sched{list-style:none;padding:0;display:grid;gap:10px;perspective:900px}
+.sched li{--cut:10px;position:relative;display:grid;grid-template-columns:132px minmax(0,1fr);gap:4px 20px;align-items:baseline;padding:16px 20px 16px 22px;
+  background:rgba(10,0,14,.8);border:1px solid var(--line);clip-path:var(--chamfer);cursor:pointer;outline:none;
+  transition:transform .28s var(--ease),opacity .25s,background .25s,border-color .25s}
+.sched li::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.sched time{font:500 13px/22px var(--display);letter-spacing:.02em;color:var(--cyan);white-space:nowrap}
+.sched h3{font-weight:800;font-size:20px;line-height:1.3;letter-spacing:-.02em}
+.sched p{grid-column:2;font-size:15px;line-height:1.5;color:#eadbe8}
+.sched.has li:not(.on){opacity:.75}
+.sched li.on{transform:translate3d(10px,0,32px) scale(1.025);background:rgba(34,0,44,.96);border-color:var(--c);z-index:2}
+.sched li:focus-visible{border-color:#fff}
+.tt + .fine{margin-top:32px;color:#d9c3d6}
+@media(max-width:900px){
+  .tt{grid-template-columns:1fr;gap:28px;margin-top:32px}
+  .clock{position:sticky;top:64px;z-index:3;max-width:none;aspect-ratio:auto;height:184px;display:grid;place-items:center;margin:0 -16px;
+    background:linear-gradient(180deg,#12001a 0%,#12001a 82%,rgba(18,0,26,0) 100%)}
+  .clock svg{width:176px;height:176px}
+  .clock svg text{font-size:22px}
+  .clock-center{width:84px;top:92px}
+  .clock-center b{font-size:10px}
+  .clock-center span{font-size:14px;margin-top:4px}
+  .sched li{grid-template-columns:1fr;padding:14px 16px 14px 20px;gap:2px}
+  .sched p{grid-column:1}
+  .sched li.on{transform:translate3d(2px,0,0) scale(1.01)}
+}
+@media(prefers-reduced-motion:reduce){.clock .hand,.clock .seg,.sched li{transition:none}}
 .flow{list-style:none;padding:0;margin-top:56px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:step}
 .flow li{counter-increment:step;position:relative;border-radius:0;clip-path:var(--chamfer);overflow:hidden;background:rgba(10,0,14,.82);border:1px solid var(--line)}
 .flow figure{aspect-ratio:3/2;overflow:hidden}
@@ -244,7 +330,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .hero-art img{object-position:50% 100%}
   .hero::after{background:linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.2) 38%,rgba(0,0,0,0) 55%),linear-gradient(0deg,#000 0%,rgba(0,0,0,.75) 22%,rgba(0,0,0,0) 52%)}
   .hero{align-items:stretch}
-  .hero-copy{display:flex;flex-direction:column;width:100%;min-height:100svh;padding:104px 0 max(32px,env(safe-area-inset-bottom))}
+  .hero-copy{display:flex;flex-direction:column;width:100%;min-height:100svh;padding:104px 0 calc(max(32px,env(safe-area-inset-bottom)) + 56px)}
+  .band{--bandh:56px}
   .hero h1{font-size:clamp(64px,20vw,96px)}
   .motion .hero-copy h1{animation:rise .9s var(--ease) 80ms both}
   :root{--cut:12px}
@@ -278,6 +365,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </style>
 </head>
 <body>
+<div class="cover" id="cover" aria-hidden="true">
+  <picture class="cover-bg"><source media="(max-width:767px)" srcset="img/cover_tall.jpg"><img src="img/cover.jpg" alt=""></picture>
+  <div class="cover-mark"><i class="cover-bars"></i><p><span>THE D</span><span>GAME</span></p></div>
+</div>
 
 <div class="rail" aria-hidden="true"><i id="railbar"></i><b id="railnum">00</b></div>
 
@@ -286,7 +377,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <a class="brand" href="#top">D.LIGHT</a>
     <nav>
       <a href="#games">게임</a>
-      <a href="#day">하루 흐름</a>
+      <a href="#day">타임라인</a>
       <a class="go" href="#reserve">예약하기</a>
     </nav>
   </div>
@@ -305,8 +396,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <p class="lede">혼자 푸는 두뇌 게임부터 팀으로 겨루는 게임까지. 디라이트 멤버 여러분을 D의 게임에 초대합니다.</p>
         <div class="spacer"></div>
         <ul class="facts">
-          <li><b>일정</b>추후 공개</li>
-          <li><b>장소</b>추후 공개</li>
+          <li class="lock" tabindex="0"><b>일정</b><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M3 5V3h1V2h4v1h1v2h1v6H2V5zm2 0h2V3H5z" fill-rule="evenodd"/></svg><span>추후 공개</span></li>
+          <li><b>장소</b>송파구 어딘가 (임시)</li>
         </ul>
         <a class="cta" href="#reserve">예약하기<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg></a>
       </div>
@@ -362,13 +453,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   <section class="day" id="day">
     <div class="wrap">
-      <h2 class="rv">게임 앞뒤로도 함께합니다</h2>
-      <p class="sub rv">시작 전에는 커피챗으로 인사를 나누고, 끝난 뒤에는 뒤풀이가 이어집니다. 시간은 추후 공개합니다.</p>
-      <ol class="flow">
-        <li class="rv"><figure><img src="img/t_coffee.jpg" alt="" width="1200" height="800" loading="lazy"></figure><div class="txt"><h3>사전 모임 커피챗</h3><p>게임 전에 가볍게 만나 인사를 나눕니다.</p></div></li>
-        <li class="rv main" style="--d:90ms"><figure><img src="img/t_game.jpg" alt="" width="1200" height="800" loading="lazy"></figure><div class="txt"><h3>D의 게임</h3><p>개인전과 팀전, 다섯 가지 게임을 진행합니다.</p></div></li>
-        <li class="rv" style="--d:180ms"><figure><img src="img/t_after.jpg" alt="" width="1200" height="800" loading="lazy"></figure><div class="txt"><h3>뒤풀이</h3><p>게임이 끝나면 뒤풀이로 이어집니다.</p></div></li>
-      </ol>
+      <h2 class="rv">타임라인</h2>
+      <div class="tt rv" id="tt">
+        <div class="clock"><svg id="clocksvg" viewBox="0 0 400 400" role="img" aria-label="하루 시간표 시계"></svg>
+          <div class="clock-center" aria-live="polite"><b id="cc-time"></b><span id="cc-title"></span></div></div>
+        <ol class="sched" id="sched"></ol>
+      </div>
+      <p class="fine rv">임시 시간표입니다. 장소는 송파구 어딘가(임시)이며, 시간과 장소가 확정되면 다시 안내드립니다.</p>
     </div>
   </section>
 
@@ -427,6 +518,16 @@ const LOCAL = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
 const API = LOCAL ? "api/reserve" : ENDPOINT;
 const $ = (s) => document.querySelector(s);
 const motion = document.documentElement.classList.contains("motion");
+// 오프닝 표지: 3.1초 뒤(또는 누르면) 걷히고, 그때 첫 화면이 켜진다
+(() => {
+  const root = document.documentElement, cover = $("#cover");
+  if (!root.classList.contains("covering")) return;
+  let done = false;
+  const leave = () => { if (done) return; done = true; root.classList.remove("held"); root.style.overflow = "auto"; cover.classList.add("out"); dispatchEvent(new Event("dg-enter")); setTimeout(() => { root.classList.remove("covering"); root.style.overflow = ""; }, 460); };
+  cover.addEventListener("click", leave); addEventListener("keydown", leave, {once: true});
+  ["wheel", "touchmove"].forEach((n) => addEventListener(n, leave, {passive: true, once: true}));
+  setTimeout(leave, 2100);
+})();
 const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 
 // 위 줄 배경, 첫 화면 그림 따라오기
@@ -554,7 +655,7 @@ void main(){
     dpr = Math.min(devicePixelRatio || 1, wide.matches ? 1.5 : 1.25);
     const W = heropic.clientWidth, H = heropic.clientHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); gl.viewport(0, 0, cv.width, cv.height);
     const sc = Math.max(W / iw, H / ih), fx = W / (iw * sc), fy = H / (ih * sc), px = wide.matches ? .7 : .5, py = wide.matches ? .5 : 1;
-    gl.uniform4f(U.uFit, (1 - fx) * px, (1 - fy) * py, fx, fy); gl.uniform1f(U.uCell, 14 * dpr);
+    gl.uniform4f(U.uFit, (1 - fx) * px, (1 - fy) * py, fx, fy); gl.uniform1f(U.uCell, 8 * dpr);
   }
   async function setup() {
     isWide = wide.matches; const name = isWide ? "hero" : "hero_tall";
@@ -575,7 +676,7 @@ void main(){
     // 커서가 없으면(휴대폰) 천천히 흔들리게 해서 입체가 보이게 한다
     const sway = hover ? .3 : .25;
     mx += (tx + Math.sin(t * .55) * sway - mx) * .06; my += (ty + Math.cos(t * .4) * sway * .6 - my) * .06;
-    gl.uniform2f(U.uMouse, -mx, -my); gl.uniform1f(U.uTime, t); gl.uniform1f(U.uReveal, Math.min(1, t / (wide.matches ? .9 : .65))); gl.uniform1f(U.uGlitch, glitch);
+    gl.uniform2f(U.uMouse, -mx, -my); gl.uniform1f(U.uTime, t); gl.uniform1f(U.uReveal, Math.min(1, t / (wide.matches ? .45 : .35))); gl.uniform1f(U.uGlitch, glitch);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
   const hover = matchMedia("(hover:hover)").matches;
@@ -584,6 +685,7 @@ void main(){
   new IntersectionObserver((es) => { vis = es[0].isIntersecting; wake(); }).observe(heropic);
   document.addEventListener("visibilitychange", wake);
   addEventListener("resize", () => { if (!ready) return; if (wide.matches !== isWide) setup().catch(() => {}); else fit(); });
+  addEventListener("dg-enter", () => { t0 = performance.now(); nextGlitch = 6; });  // 표지가 걷힐 때 픽셀 리빌을 다시 시작
   cv.addEventListener("webglcontextlost", fail);
   const guard = setTimeout(() => { if (!ready) fail(); }, 6000);
   setup().then(() => clearTimeout(guard)).catch(fail);
@@ -612,6 +714,76 @@ if (matchMedia("(hover:hover)").matches) document.querySelectorAll(".game").forE
     el.style.setProperty("--ry", (x / r.width - .5) * 7 + "deg"); el.style.setProperty("--rx", (.5 - y / r.height) * 6 + "deg");  // 입체 기울임
   });
   el.addEventListener("pointerleave", () => { el.style.setProperty("--ry", "0deg"); el.style.setProperty("--rx", "0deg"); });
+});
+
+// 하루 시간표(임시). 이 배열만 고치면 시계와 표가 함께 바뀐다
+const SCHED = [
+  {s: "13:00", e: "14:00", t: "사전 모임 커피챗", d: "가볍게 만나 인사를 나눕니다.", c: "#b79bff"},
+  {s: "14:00", e: "14:20", t: "오프닝과 팀 배정", d: "진행 방식을 안내하고 팀을 나눕니다.", c: "#3ff5ff"},
+  {s: "14:20", e: "15:10", t: "개인전 두뇌 게임", d: "틀린그림찾기, 로고 도형 추론", c: "#ffffff"},
+  {s: "15:10", e: "15:30", t: "쉬는 시간", d: "잠시 쉬어 갑니다.", c: "#7b6a7a"},
+  {s: "15:30", e: "16:10", t: "카드 대결", d: "카드 일곱 장으로 겨루는 팀 게임", c: "#ff12c8"},
+  {s: "16:10", e: "16:50", t: "인간 윷놀이", d: "팀이 함께하는 윷놀이", c: "#ff5ad9"},
+  {s: "16:50", e: "17:30", t: "합산 플레이", d: "공 튀기기, 제기차기, 바구니에 신발 넣기, 주사위 굴리기", c: "#ff12c8"},
+  {s: "17:30", e: "18:00", t: "결과 발표", d: "개인전과 팀전 결과를 발표합니다.", c: "#3ff5ff"},
+  {s: "18:00", e: "20:00", t: "뒤풀이", d: "게임이 끝나면 뒤풀이로 이어집니다.", c: "#ffc2f1"},
+];
+(() => {
+  const svg = $("#clocksvg"), list = $("#sched"), NS = "http://www.w3.org/2000/svg", C = 200;
+  const mins = (x) => { const [h, m] = x.split(":").map(Number); return h * 60 + m; };
+  const ang = (m) => (m % 720) / 720 * 360;  // 12시 방향이 0도
+  const pt = (a, r) => { const q = (a - 90) * Math.PI / 180; return [C + r * Math.cos(q), C + r * Math.sin(q)]; };
+  const el = (name, attrs) => { const n = document.createElementNS(NS, name); for (const k in attrs) n.setAttribute(k, attrs[k]); svg.append(n); return n; };
+  // 눈금: 분은 작은 픽셀, 시는 큰 픽셀과 숫자
+  for (let i = 0; i < 60; i++) { const hour = i % 5 === 0, [x, y] = pt(i * 6, 192), u = hour ? 6 : 3; el("rect", {x: x - u / 2, y: y - u / 2, width: u, height: u, fill: hour ? "#3ff5ff" : "rgba(255,255,255,.35)"}); }
+  for (let h = 1; h <= 12; h++) { const [x, y] = pt(h * 30, 172), t = el("text", {x, y: y + 5, "text-anchor": "middle", "font-size": 13, "font-family": "Unbounded, sans-serif", fill: h >= 1 && h <= 8 ? "#fff" : "rgba(255,255,255,.4)"}); t.textContent = h; }
+  el("circle", {cx: C, cy: C, r: 140, fill: "none", stroke: "rgba(255,255,255,.08)", "stroke-width": 30});
+  el("circle", {cx: C, cy: C, r: 110, fill: "none", stroke: "rgba(63,245,255,.35)", "stroke-width": 1, "stroke-dasharray": "2 6"});
+  const segs = SCHED.map((x, i) => {
+    const a0 = ang(mins(x.s)) + .9, a1 = ang(mins(x.e)) - .9, [x0, y0] = pt(a0, 140), [x1, y1] = pt(a1, 140);
+    const seg = el("path", {class: "seg", d: `M${x0.toFixed(2)} ${y0.toFixed(2)}A140 140 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`, style: `--c:${x.c}`});
+    seg.dataset.i = i; return seg;
+  });
+  const hand = el("g", {class: "hand"});
+  [[197, 36, 6, 60, "#fff"], [193, 28, 14, 14, "#3ff5ff"], [195, 96, 10, 10, "#ff12c8"]].forEach(([x, y, w, h, fill]) => { const r = document.createElementNS(NS, "rect"); for (const [k, v] of Object.entries({x, y, width: w, height: h, fill})) r.setAttribute(k, v); hand.append(r); });
+  const rows = SCHED.map((x, i) => {
+    const li = document.createElement("li"); li.tabIndex = 0; li.style.setProperty("--c", x.c); li.dataset.i = i;
+    const tm = document.createElement("time"), h3 = document.createElement("h3"), pp = document.createElement("p");
+    tm.textContent = `${x.s}~${x.e}`; h3.textContent = x.t; pp.textContent = x.d; li.append(tm, h3, pp); list.append(li); return li;
+  });
+  let cur = -1, touched = false;
+  const aim = (i) => hand.style.setProperty("--a", (ang(mins(SCHED[i].s)) + ang(mins(SCHED[i].e))) / 2 + "deg");
+  function pick(i) {
+    if (i === cur) return; cur = i; const x = SCHED[i];
+    rows.forEach((r, j) => r.classList.toggle("on", j === i)); segs.forEach((g, j) => g.classList.toggle("on", j === i)); list.classList.add("has");
+    hand.style.transition = ""; aim(i);
+    $("#cc-time").textContent = `${x.s}~${x.e}`; $("#cc-title").textContent = x.t;
+  }
+  window.__pick = pick;
+  const over = (e) => { const t = e.target.closest("[data-i]"); if (t) { touched = true; pick(+t.dataset.i); } };
+  [list, svg].forEach((n) => { n.addEventListener("pointerover", over); n.addEventListener("click", over); n.addEventListener("focusin", over); });
+  pick(0);
+  if (!matchMedia("(hover:hover)").matches) {
+    let tk = false;
+    addEventListener("scroll", () => { if (tk) return; tk = true; requestAnimationFrame(() => { tk = false;
+      const r = list.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+      const y = innerHeight * .62; let best = 0, gap = 1e9;
+      rows.forEach((row, i) => { const b = row.getBoundingClientRect(), g = Math.abs((b.top + b.bottom) / 2 - y); if (g < gap) { gap = g; best = i; } });
+      touched = true; pick(best); }); }, {passive: true});
+  }
+  // 처음 보일 때 바늘이 하루를 한 번 훑는다
+  if (motion && "IntersectionObserver" in window) { const io = new IntersectionObserver((es) => { if (!es[0].isIntersecting) return; io.disconnect(); if (touched) return;
+      hand.style.transition = "transform .9s cubic-bezier(.4,0,.2,1)"; hand.style.setProperty("--a", ang(mins(SCHED[SCHED.length - 1].e)) + "deg");
+      setTimeout(() => { if (!touched) { hand.style.transition = ""; aim(cur); } }, 950); }, {threshold: .35}); io.observe($("#tt")); }
+})();
+
+// 잠금 칩: 해독하는 듯 글자가 뒤섞였다가 '추후 공개'로 돌아온다
+document.querySelectorAll(".facts .lock").forEach((li) => {
+  const sp = li.querySelector("span"), fin = sp.textContent, G = "▚▞▙▟▓▒░01"; let busy = false;
+  const run = () => { if (busy || !motion) return; busy = true; li.classList.add("run"); let n = 0;
+    const id = setInterval(() => { n++; sp.textContent = [...fin].map((ch, i) => ch === " " || i < n - 4 ? ch : G[(Math.random() * G.length) | 0]).join("");
+      if (n > fin.length + 4) { clearInterval(id); sp.textContent = fin; li.classList.remove("run"); busy = false; } }, 55); };
+  li.addEventListener("pointerenter", run); li.addEventListener("click", run); li.addEventListener("focus", run);
 });
 
 // 예약 인원
