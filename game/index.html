@@ -602,8 +602,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <footer><div class="wrap"><span>D.LIGHT 팀 대항전, D의 게임</span><span>세부 내용은 추후 공개합니다.</span></div></footer>
 
 <script>
-// 예약을 받는 주소. 운영에 올릴 때 구글 앱스 스크립트 웹앱 주소를 넣는다. 비어 있으면(로컬이 아닌 곳) 저장 없이 화면만 보여 준다.
-const ENDPOINT = "";
+// 예약을 받는 주소: 수요조사와 같은 구글 앱스 스크립트 웹앱의 예약 경로(?r=reserve). 예약은 구글 시트 'D의 게임 예약' 에 쌓인다. 비우면 저장 없는 샘플이 된다.
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzuLCoBmKUrx3KNtcnFPugeVsgSnueBo2pZ_cpPPnmTDKJ-3ziD53N8-R3Vuh6z8T1H/exec?r=reserve";
 const LOCAL = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
 const API = LOCAL ? "api/reserve" : ENDPOINT;
 const $ = (s) => document.querySelector(s);
@@ -1052,8 +1052,8 @@ if (f) f.addEventListener("submit", async (e) => {
   if (!API) { ticket({nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : missionCode(v.type, 0)}, true); return; }  // 샘플: 저장 없이 화면만
   btn.disabled = true; btn.textContent = "보내는 중입니다";
   try {
-    const t = await (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(v)})).json();
-    if (t.ok) { const tk = {no: t.no, nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : missionCode(v.type, t.no)}; store.set("dg-ticket", tk); showCount(t.count); ticket(tk, true); return; }
+    const t = await (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(Object.assign({r: "reserve"}, v))})).json();
+    if (t.ok) { const tk = {no: t.no, nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : (t.code || missionCode(v.type, t.no))}; store.set("dg-ticket", tk); showCount(t.count); ticket(tk, true); return; }
     msg.textContent = t.error === "dup" ? "이미 예약된 전화번호입니다." : "입력 내용을 다시 확인해 주시기 바랍니다.";
   } catch (err) { msg.textContent = "예약을 보내지 못했습니다. 잠시 뒤 다시 시도해 주시기 바랍니다."; }
   btn.disabled = false; btn.textContent = "예약하기";
