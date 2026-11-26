@@ -121,6 +121,7 @@ html.viacover.landed .hero-copy h1{opacity:1;animation:glitch 11s steps(1) 4s in
 .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;padding:0;list-style:none}
 .facts li{display:flex;gap:8px;align-items:baseline;padding:9px 16px;border:1px solid rgba(63,245,255,.4);border-radius:3px;background:rgba(0,0,0,.35);font-size:14px;line-height:20px}
 .facts li b{font-weight:700;color:var(--cyan)}
+.facts li small{font-size:13px;color:var(--mute)}
 .facts .lock{cursor:help;align-items:center;outline:none}
 .facts .lock svg{color:var(--magenta);flex:none}
 .facts .lock span{font-variant-numeric:tabular-nums;min-width:4.6em}
@@ -450,10 +451,81 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .ticket .t-cut{margin:14px -24px 0}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.game:hover img{transform:none}}
+
+/* ── v1.7: 소리 단추·톱니바퀴 ── */
+.nav nav button.ic{display:grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid var(--line);border-radius:3px;background:rgba(0,0,0,.35);color:var(--soft);cursor:pointer}
+.nav nav button.ic:hover{color:#fff;border-color:rgba(63,245,255,.6)}
+#sndbtn .x{display:none} #sndbtn.off .x{display:block} #sndbtn.off .w{display:none} #sndbtn.off{color:#8d7f8c}
+@media(max-width:767px){.nav nav{gap:8px}}
+/* 표지: 눌러서 시작 */
+.cover-tap{position:absolute;left:0;right:0;top:50%;z-index:2;margin:-30px 0 0;padding:0 20px;text-align:center;color:#fff;pointer-events:none}
+.cover-tap b{display:block;font:800 clamp(20px,3.4vw,34px)/1 var(--display);letter-spacing:.05em}
+.motion .cover-tap b{animation:tapblink 1.1s steps(2) infinite}
+.cover-tap span{display:block;margin-top:14px;font-size:15px;line-height:22px;color:var(--soft)}
+.cover-mute{position:absolute;left:50%;bottom:12%;z-index:3;transform:translateX(-50%);min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:3px;background:rgba(0,0,0,.4);color:var(--soft);font-size:14px;cursor:pointer}
+.cover.go .cover-tap,.cover.go .cover-mute,.cover.gone .cover-tap,.cover.gone .cover-mute{display:none}
+@keyframes tapblink{50%{opacity:.65}}
+/* 동반 인원 */
+.field small.opt{display:inline;margin-left:6px;font-weight:500}
+.plus{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.plus label{position:relative;display:block;cursor:pointer}
+.plus input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.plus span{display:grid;place-items:center;height:48px;border:1px solid var(--line);border-radius:3px;background:rgba(0,0,0,.4);font-size:15px;font-weight:700;transition:border-color .2s,background .2s}
+.plus label:hover span{border-color:rgba(63,245,255,.6)}
+.plus input:checked+span{border-color:var(--magenta);background:rgba(255,18,200,.2);color:#fff}
+.plus input:focus-visible+span{outline:2px solid #fff;outline-offset:2px}
+/* 예약 완료 팝업·폭죽 */
+.pop{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(5,0,8,.74)}
+.pop[hidden],.adm[hidden]{display:none}
+.pop-box{width:min(420px,100%);padding:34px 28px 30px;text-align:center;background:var(--panel);border:1px solid rgba(255,18,200,.8);box-shadow:0 0 44px rgba(255,18,200,.35)}
+.pop-box h3{font-weight:900;font-size:26px;line-height:1.25;letter-spacing:-.03em}
+.pop-box p{margin-top:12px;font-size:16px;line-height:1.6;color:#eadbe8}
+.pop-box button{margin-top:24px;min-width:148px;height:48px;border:0;border-radius:0;background:var(--magenta);color:#000;font-size:16px;font-weight:800;cursor:pointer;--cut:10px;clip-path:var(--chamfer)}
+.motion .pop-box{animation:popin .34s var(--ease) both}
+@keyframes popin{from{opacity:0;transform:translateY(16px) scale(.95)}}
+canvas.fw{position:fixed;inset:0;z-index:81;width:100%;height:100%;pointer-events:none}
+/* 관리자 창 */
+.adm{position:fixed;inset:0;z-index:90;overflow:auto;background:#0a0010;color:#fff}
+.adm-in{width:min(1120px,100% - 32px);margin:0 auto;padding:22px 0 64px}
+.adm-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.adm-top h2{font-weight:900;font-size:24px;letter-spacing:-.03em}
+.adm-acts{display:flex;gap:8px}
+.adm-b{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.04);color:#fff;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+.adm-b:hover{border-color:rgba(63,245,255,.6)}
+.adm-pin{max-width:320px;margin:14vh auto 0;text-align:center}
+.adm-pin p{font-size:16px;line-height:1.6;color:#eadbe8}
+.adm-pin input{width:100%;height:56px;margin-top:16px;border:1px solid var(--line);border-radius:3px;background:rgba(0,0,0,.4);text-align:center;font-size:24px;letter-spacing:.4em}
+.adm-pin input:focus{outline:none;border-color:var(--cyan)}
+.adm-pin .adm-b{width:100%;justify-content:center;height:48px;margin-top:10px;background:var(--magenta);border-color:var(--magenta);color:#000;font-size:16px}
+.adm-pin .adm-msg{min-height:24px;margin-top:12px;font-size:14px;color:#ffb4c8}
+.adm-note{margin-top:8px;font-size:13px;line-height:20px;color:var(--mute)}
+.adm-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.adm-tile{padding:16px 18px;border:1px solid var(--line);background:var(--panel)}
+.adm-tile span{display:block;font-size:13px;line-height:18px;color:var(--mute)}
+.adm-tile b{display:block;margin-top:10px;font:800 30px/1 var(--display)}
+.adm-tile b small{font:600 14px/1 var(--body);margin-left:4px;color:var(--soft)}
+.adm h3{margin-top:30px;font-size:17px;font-weight:800}
+.adm-stack{display:flex;height:24px;margin-top:12px;background:rgba(255,255,255,.06)}
+.adm-stack i{display:block;height:100%;background:var(--c);min-width:0}
+.adm-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;margin-top:14px}
+.adm-bar{display:grid;grid-template-columns:28px 118px 1fr 64px;gap:10px;align-items:center;font-size:14px}
+.adm-bar canvas{width:28px;height:28px;image-rendering:pixelated}
+.adm-bar .tr{height:12px;background:rgba(255,255,255,.07)}
+.adm-bar .tr i{display:block;height:100%;width:0;background:var(--c);transition:width .7s var(--ease)}
+.adm-bar em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--soft)}
+.adm-scroll{margin-top:12px;overflow-x:auto;border:1px solid var(--line)}
+.adm-table{width:100%;border-collapse:collapse;font-size:14px;line-height:20px}
+.adm-table th,.adm-table td{padding:10px 12px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+.adm-table th{font-weight:700;color:var(--cyan);background:rgba(255,255,255,.03)}
+.adm-table tr:last-child td{border-bottom:0}
+.adm-empty{margin-top:12px;padding:28px;border:1px solid var(--line);text-align:center;color:var(--mute)}
+@media(max-width:767px){.adm-tiles{grid-template-columns:1fr 1fr}.adm-bars{grid-template-columns:1fr}.adm-bar{grid-template-columns:24px 98px 1fr 80px;gap:8px}.adm-tile b{font-size:24px}}
 </style>
 </head>
 <body>
-<div class="cover" id="cover" aria-hidden="true">
+<div class="cover" id="cover">
+  <p class="cover-tap"><b>TAP TO START</b><span>화면을 누르면 소리와 함께 시작합니다</span></p>
+  <button class="cover-mute" id="covermute" type="button">소리 없이 보기</button>
   <picture class="cover-bg"><source media="(max-width:767px)" srcset="img/cover_tall.jpg"><img src="img/cover.jpg" alt=""></picture>
   <i class="cover-flash"></i>
   <div class="cm"><i class="cover-bars"></i><span class="cm-t cm-the">THE</span><span class="cm-dw"><b class="cm-d chrome">D</b></span><span class="cm-t cm-game">GAME</span></div>
@@ -467,7 +539,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <nav>
       <a href="#games">게임</a>
       <a href="#day">타임라인</a>
+      <button class="ic" id="sndbtn" type="button" aria-label="소리 끄기" aria-pressed="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z"/><path class="w" d="M11 5h1v1h1v4h-1v1h-1v-1h1V6h-1z"/><path class="x" d="M10 6h1v1h1V6h1v1h-1v2h1v1h-1V9h-1v1h-1V9h1V7h-1z"/></svg></button>
       <a class="go" href="#reserve">예약하기</a>
+      <button class="ic" id="admbtn" type="button" aria-label="관리자 창 열기"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7 1h2v2h1V2h2v1h1v2h-1v1h2v2h-2v1h1v2h-1v1h-2v-1H9v2H7v-2H6v1H4v-1H3V9h1V8H2V6h2V5H3V3h1V2h2v1h1zm0 5v1H6v2h1v1h2V9h1V7H9V6z"/></svg></button>
     </nav>
   </div>
 </header>
@@ -482,12 +556,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="hero-copy">
         <p class="from">D.LIGHT 팀 대항전</p>
         <h1><b class="chrome">D</b><span class="rest">의 게임</span></h1>
-        <p class="lede">혼자 푸는 두뇌 게임부터 팀으로 겨루는 게임까지. 디라이트 멤버 여러분을 D의 게임에 초대합니다.</p>
+        <p class="lede">두뇌 게임부터 팀으로 겨루는 게임까지.<br>디라이트 멤버 여러분을 D의 게임에 초대합니다.</p>
         <div class="spacer"></div>
         <ul class="facts">
-          <li><b>일정</b>2027년 1월 23일 토요일 14:00 시작</li>
+          <li><b>일정</b>2027년 1월 23일 토요일</li>
           <li><b>장소</b>서울 송파구 (장소 섭외 중)</li>
-          <li><b>시간</b>커피챗 13:00 · 본행사 마감 18:00</li>
+          <li><b>본행사</b>14:00~18:00</li>
+          <li><b>전체</b>13:00~20:00 <small>커피챗·뒤풀이 포함</small></li>
         </ul>
         <a class="cta" href="#reserve">예약하기<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg></a>
       </div>
@@ -558,9 +633,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="side">
         <h2 class="rv">예약</h2>
         <p class="sub rv">닉네임, 성함, 전화번호를 남겨 주시면 예약이 접수됩니다.</p>
-        <p class="count rv" id="countbox" hidden>지금까지 <strong id="count">0</strong>명이 예약했습니다.</p>
+        <p class="count rv" id="countbox" hidden>지금까지 동반 인원을 포함해 <strong id="count">0</strong>명이 예약했습니다.</p>
         <ul class="notes rv">
-          <li>2027년 1월 23일 토요일 14:00에 시작합니다. 장소가 정해지면 남겨 주신 전화번호로 안내드립니다.</li>
+          <li>예약 마감 후 단체 채팅방에 초대할 예정입니다.</li>
           <li>전화번호 하나로 한 번만 예약할 수 있습니다.</li>
         </ul>
       </div>
@@ -583,6 +658,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <input type="tel" id="phone" name="phone" aria-describedby="e-phone" inputmode="numeric" maxlength="13" placeholder="010-0000-0000" autocomplete="tel" required>
             <p class="err" id="e-phone"></p>
           </div>
+          <div class="field">
+            <label id="plusl">동반 인원 <small class="opt">선택</small></label>
+            <small>지인과 함께 오시면 본인을 뺀 추가 인원을 골라 주시기 바랍니다.</small>
+            <div class="plus" role="radiogroup" aria-labelledby="plusl"><label><input type="radio" name="plus" value="0" checked><span>없음</span></label><label><input type="radio" name="plus" value="1"><span>1명</span></label><label><input type="radio" name="plus" value="2"><span>2명</span></label><label><input type="radio" name="plus" value="3"><span>3명</span></label></div>
+          </div>
           <div class="quiz" id="quiz">
             <details>
               <summary>성향 배지 만들기 <small>선택</small></summary>
@@ -598,7 +678,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <p class="err" id="e-agree"></p>
             <details>
               <summary>수집 내용 보기</summary>
-              <dl><dt>항목</dt><dd>닉네임, 성함, 전화번호</dd><dt>목적</dt><dd>예약 확인과 행사 안내</dd><dt>보관</dt><dd>행사가 끝나면 지웁니다.</dd></dl>
+              <dl><dt>항목</dt><dd>닉네임, 성함, 전화번호, 동반 인원</dd><dt>목적</dt><dd>예약 확인과 행사 안내</dd><dt>보관</dt><dd>행사가 끝나면 지웁니다.</dd></dl>
             </details>
           </div>
           <button class="send" id="btn" type="submit">예약하기</button>
@@ -611,6 +691,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <footer><div class="wrap"><span>D.LIGHT 팀 대항전, D의 게임</span><span>세부 내용은 추후 공개합니다.</span></div></footer>
 
+<div class="pop" id="pop" role="dialog" aria-modal="true" aria-labelledby="poph" hidden><div class="pop-box"><h3 id="poph">예약이 완료되었습니다!</h3><p>예약 마감 후 단체 채팅방에 초대해 드리며,<br>자세한 내용은 추후 안내드리겠습니다.</p><button type="button" id="popok">확인</button></div></div>
+<div class="adm" id="adm" role="dialog" aria-modal="true" aria-labelledby="admh" hidden><div class="adm-in"><div class="adm-top"><h2 id="admh">D의 게임 예약 관리</h2><div class="adm-acts" id="admacts"></div></div><div id="admbody"></div></div></div>
+
 <script>
 // 예약을 받는 주소: 수요조사와 같은 구글 앱스 스크립트 웹앱의 예약 경로(?r=reserve). 예약은 구글 시트 'D의 게임 예약' 에 쌓인다. 비우면 저장 없는 샘플이 된다.
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbzuLCoBmKUrx3KNtcnFPugeVsgSnueBo2pZ_cpPPnmTDKJ-3ziD53N8-R3Vuh6z8T1H/exec?r=reserve";
@@ -622,7 +705,48 @@ const motion = document.documentElement.classList.contains("motion");
 const touchTrack = (el, move, end) => { const h = (e) => { const t = e.touches[0]; if (t) move(t); };
   el.addEventListener("touchstart", h, {passive: true}); el.addEventListener("touchmove", h, {passive: true});
   ["touchend", "touchcancel"].forEach((n) => el.addEventListener(n, () => end && end(), {passive: true})); };
-// 오프닝 표지: 글꼴이 준비되면 시작 → D 가 내리꽂힘 → 1.75초 뒤(또는 누르거나 스크롤하면) D 가 첫 화면 제목 자리로 날아가 앉는다
+// 소리: 배경음 한 곡(반복)과 효과음. 브라우저는 화면을 누르기 전에는 소리를 못 내므로, 파일만 미리 받아 두고 처음 누르는 순간 켠다.
+// 파일은 -16 LUFS(배경음)·피크 -3 dBFS(효과음)로 맞춰 두었고, 아래 숫자는 화면에서 섞는 비율이다(배경음은 낮게 깔고 효과음이 그 위로 들리게)
+const SND = (() => {
+  const VOL = {bgm: .3, slam: .75, whoosh: .5, tick: .3, card: .42, blip: .26, win: .42, glitch: .26}, names = Object.keys(VOL), raw = {}, buf = {}, last = {};
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let ctx = null, master = null, bgm = null, on = true;
+  try { on = localStorage.getItem("dg-snd") !== "0"; } catch (e) {}
+  if (AC) names.forEach((n) => { raw[n] = fetch(`snd/${n}.mp3`).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null); });
+  const dec = (n) => (buf[n] ? Promise.resolve(buf[n]) : raw[n].then((a) => (a && ctx ? new Promise((ok) => ctx.decodeAudioData(a.slice(0), ok, () => ok(null))) : null)).then((b) => (buf[n] = b || buf[n])));
+  function play(n, rate) {
+    if (!on || !ctx || ctx.state !== "running" || !buf[n]) return false;
+    const now = ctx.currentTime; if (now - (last[n] === undefined ? -1 : last[n]) < .07) return false; last[n] = now;
+    const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf[n]; if (rate) s.playbackRate.value = rate; g.gain.value = VOL[n]; s.connect(g); g.connect(master); s.start(); return true;
+  }
+  function startBgm() {
+    if (bgm || !on || !ctx || !buf.bgm) return;
+    const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf.bgm; s.loop = true;
+    g.gain.setValueAtTime(0, ctx.currentTime); g.gain.linearRampToValueAtTime(VOL.bgm, ctx.currentTime + 2.5); s.connect(g); g.connect(master); s.start(); bgm = {s, g};
+  }
+  function stopBgm() { if (!bgm) return; const b = bgm; bgm = null; b.g.gain.cancelScheduledValues(ctx.currentTime); b.g.gain.setTargetAtTime(0, ctx.currentTime, .12); setTimeout(() => { try { b.s.stop(); } catch (e) {} }, 600); }
+  // 처음 누를 때 부른다. first 에 적은 소리는 풀릴 때까지 기다려 준다(오프닝 소리가 모션과 어긋나지 않게)
+  async function unlock(first) {
+    if (!AC) return;
+    if (!ctx) { ctx = new AC(); master = ctx.createGain(); master.connect(ctx.destination); }
+    const p = ctx.state === "running" ? null : ctx.resume().catch(() => {});
+    const need = first ? Promise.all(first.map(dec)) : null;
+    names.filter((n) => n !== "bgm").forEach(dec); dec("bgm").then(startBgm);
+    await p; await need;
+  }
+  const btn = () => document.getElementById("sndbtn");
+  const paint = () => { const b = btn(); if (!b) return; b.classList.toggle("off", !on); b.setAttribute("aria-pressed", on ? "true" : "false"); b.setAttribute("aria-label", on ? "소리 끄기" : "소리 켜기"); };
+  function toggle(v) { on = v === undefined ? !on : v; try { localStorage.setItem("dg-snd", on ? "1" : "0"); } catch (e) {} paint(); if (!on) stopBgm(); else if (ctx) { unlock(); startBgm(); } }
+  document.addEventListener("visibilitychange", () => { if (!ctx) return; if (document.hidden) ctx.suspend(); else if (on) ctx.resume(); });
+  // 표지가 없을 때(다시 들어온 사람, 동작 줄이기)도 처음 누르면 켜진다
+  ["pointerdown", "keydown"].forEach((n) => addEventListener(n, () => unlock(), {once: true, capture: true}));
+  addEventListener("DOMContentLoaded", paint); paint();
+  return {play, unlock, toggle, state: () => ({on, ctx: ctx ? ctx.state : "none", bgm: !!bgm, loaded: names.filter((n) => buf[n])})};
+})();
+window.__snd = SND;
+document.getElementById("sndbtn").addEventListener("click", () => { SND.toggle(); SND.play("blip"); });
+
+// 오프닝 표지: 누르면 시작 → D 가 내리꽂힘 → 1.75초 뒤(또는 누르거나 스크롤하면) D 가 첫 화면 제목 자리로 날아가 앉는다
 (() => {
   const root = document.documentElement, cover = $("#cover");
   if (!root.classList.contains("covering")) return;
@@ -637,7 +761,7 @@ const touchTrack = (el, move, end) => { const h = (e) => { const t = e.touches[0
     if (done) return; done = true;
     hold(bg, "opacity"); words.forEach((w) => hold(w, "opacity")); dw.style.opacity = 1; dw.style.animation = "none"; cm.style.animation = "none";
     const target = $(".hero h1 b"), a = d.getBoundingClientRect(), b = target.getBoundingClientRect(), k = parseFloat(getComputedStyle(target).fontSize) / parseFloat(getComputedStyle(d).fontSize);
-    void d.offsetWidth; cover.classList.add("fly"); dispatchEvent(new Event("dg-enter"));
+    void d.offsetWidth; cover.classList.add("fly"); SND.play("whoosh"); dispatchEvent(new Event("dg-enter"));
     bg.style.transition = "opacity .5s"; bg.style.opacity = 0;
     words.forEach((w) => { w.style.transition = "opacity .22s steps(3)"; w.style.opacity = 0; });
     d.style.transition = "transform .45s cubic-bezier(.7,0,.2,1)"; d.style.transform = `translate3d(${b.left - a.left}px,${b.top - a.top}px,0) scale(${k})`;
@@ -647,14 +771,24 @@ const touchTrack = (el, move, end) => { const h = (e) => { const t = e.touches[0
   }
   function start() {
     if (started) return; started = true; cover.classList.add("go"); dust.setFree(true);
+    setTimeout(() => SND.play("slam"), 300);
     setTimeout(() => { if (!done) dust.boom(innerWidth / 2, innerHeight / 2); }, 370);  // D 가 내려앉는 순간 픽셀이 터진다
     setTimeout(leave, 1750);
   }
-  cover.addEventListener("click", leave); addEventListener("keydown", leave, {once: true});
-  ["wheel", "touchmove"].forEach((n) => addEventListener(n, skip, {passive: true, once: true}));
-  // 글꼴이 바뀌며 깜빡이지 않게 Unbounded 가 준비된 뒤 시작한다(최대 0.7초 대기). dust 가 만들어진 다음에 돌도록 한 박자 늦춘다
+  // 표지는 눌러야 시작한다(소리를 모션과 맞춰 내려면 누르는 순간이 필요하다). '소리 없이 보기'를 누르면 소리만 끄고 같은 모션을 본다
+  let waiting = true;
   const ready = document.fonts && document.fonts.load ? document.fonts.load('800 100px "Unbounded"').catch(() => {}) : Promise.resolve();
-  Promise.race([ready, new Promise((r) => setTimeout(r, 700))]).then(() => setTimeout(start, 0));
+  const fontsIn = Promise.race([ready, new Promise((r) => setTimeout(r, 700))]);
+  function begin(sound) {
+    if (!waiting) return; waiting = false;
+    if (!sound) SND.toggle(false);
+    const snd = sound ? Promise.race([SND.unlock(["slam", "whoosh"]), new Promise((r) => setTimeout(r, 600))]) : Promise.resolve();
+    Promise.all([fontsIn, snd]).then(() => setTimeout(start, 0));
+  }
+  cover.addEventListener("click", (e) => { if (waiting) begin(!e.target.closest("#covermute")); else leave(); });
+  addEventListener("keydown", (e) => { if (done || e.key === "Tab") return; if (waiting) begin(true); else leave(); });
+  ["wheel", "touchmove"].forEach((n) => addEventListener(n, skip, {passive: true, once: true}));
+  window.__cover = {begin, waiting: () => waiting};
 })();
 const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 
@@ -835,25 +969,38 @@ if (motion) document.querySelectorAll(".game figure, .flow figure").forEach((fig
   fig.append(px);
 });
 
-// 당일 공개 게임: 가려진 그림 대신 모자이크. 칸이 조금씩 바뀌며 뒤에 무언가 있는 듯 보인다(실제 그림은 없음)
+// 당일 공개 게임: 가려진 그림 대신 모자이크. 부드럽게 퍼진 빛 두 덩이가 9초에 한 바퀴 도는 길을 따라 천천히 움직인다(실제 그림은 없음)
 document.querySelectorAll(".game figure.veil").forEach((fig) => {
-  const cv = fig.querySelector("canvas"), ctx = cv.getContext("2d"), N = 16; cv.width = cv.height = N;
-  let sd = +fig.dataset.seed || 1; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
-  const cx = .3 + rnd() * .4, cy = .3 + rnd() * .35, rx = .2 + rnd() * .16, ry = .2 + rnd() * .16;
-  const PAL = ["#0a000c", "#16041a", "#2a0030", "#5a0048", "#8f0a72", "#c80f9e", "#ff12c8", "#ff7be0", "#ffc2f1", "#e9e9f2"];
-  const cell = (x, y) => {
-    const dx = ((x + .5) / N - cx) / rx, dy = ((y + .5) / N - cy) / ry, v = Math.max(0, 1 - Math.hypot(dx, dy) * .62) + (Math.random() - .5) * .34;
-    ctx.fillStyle = Math.random() < .035 ? "#3ff5ff" : PAL[Math.max(0, Math.min(PAL.length - 1, Math.round(v * (PAL.length - 1))))]; ctx.fillRect(x, y, 1, 1);
-  };
-  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) cell(x, y);
+  const cv = fig.querySelector("canvas"), ctx = cv.getContext("2d"), N = 22; cv.width = cv.height = N;
+  const sd = +fig.dataset.seed || 1, hash = (x, y) => { const v = Math.sin(x * 127.1 + y * 311.7 + sd * 74.7) * 43758.5453; return v - Math.floor(v); };
+  const PAL = ["#0a000c", "#11031a", "#1a0524", "#250830", "#340b40", "#480d54", "#600f6a", "#7c1382", "#991a98", "#b527aa", "#cc3fba", "#dd62c9"];
+  const g = (u, w, cx, cy, sg) => Math.exp(-((u - cx) * (u - cx) + (w - cy) * (w - cy)) / (2 * sg * sg));
+  function draw(t) {
+    const a = (t / 9000) * 6.2832 + sd, x1 = .5 + .27 * Math.cos(a), y1 = .48 + .2 * Math.sin(a * 2), x2 = .5 + .3 * Math.cos(a + 2.4), y2 = .52 + .25 * Math.sin(a + 1.1);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const u = (x + .5) / N, w = (y + .5) / N;
+      const v = .6 * g(u, w, x1, y1, .3) + .44 * g(u, w, x2, y2, .25) + (hash(x, y) - .5) * .15 + Math.sin(t / 800 + hash(y, x) * 6.28) * .035;
+      ctx.fillStyle = PAL[Math.max(0, Math.min(PAL.length - 1, Math.round(v * (PAL.length - 1))))]; ctx.fillRect(x, y, 1, 1);
+    }
+    const k = (t / 1600) | 0;  // 시안 칸 세 개가 가끔 자리를 옮긴다
+    ctx.fillStyle = "rgba(63,245,255,.5)"; for (let i = 0; i < 3; i++) ctx.fillRect((hash(i + k, 9) * N) | 0, (hash(9, i + k) * N) | 0, 1, 1);
+  }
+  draw(0); fig.__veil = () => { const d = ctx.getImageData(0, 0, N, N).data; let mx = 0, sum = 0; for (let i = 0; i < d.length; i += 4) { const l = d[i] + d[i + 1] + d[i + 2]; mx = Math.max(mx, l); sum += l; } return {max: mx, avg: Math.round(sum / (N * N))}; };
   if (!motion || !("IntersectionObserver" in window)) return;
   let id = 0;
-  new IntersectionObserver(([e]) => { clearInterval(id); if (e.isIntersecting) id = setInterval(() => { for (let k = 0; k < 14; k++) cell((Math.random() * N) | 0, (Math.random() * N) | 0); }, 160); }).observe(fig);
+  new IntersectionObserver(([e]) => { clearInterval(id); if (e.isIntersecting) id = setInterval(() => draw(performance.now()), 90); }).observe(fig);
 });
+
+// 구역 제목이 나타날 때 글자가 해독되듯 잠깐 뒤섞였다가 제자리로 온다
+function scramble(el) {
+  if (!motion || el.children.length || el.dataset.sc) return; el.dataset.sc = 1;
+  const fin = el.textContent, G = "▚▞▙▟▓▒░"; let n = 0;
+  const id = setInterval(() => { n++; el.textContent = [...fin].map((ch, i) => (ch === " " || i < n - 2 ? ch : G[(Math.random() * G.length) | 0])).join(""); if (n > fin.length + 2) { clearInterval(id); el.textContent = fin; } }, 45);
+}
 
 // 스크롤로 나타나기(한 번만)
 if (motion && "IntersectionObserver" in window) {
-  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); if (e.target.tagName === "H2") dust.burst(e.boundingClientRect.top + e.boundingClientRect.height / 2); } }), {rootMargin: "0px 0px -8% 0px"});
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); if (e.target.tagName === "H2") scramble(e.target); if (e.target.tagName === "H2") dust.burst(e.boundingClientRect.top + e.boundingClientRect.height / 2); } }), {rootMargin: "0px 0px -8% 0px"});
   document.querySelectorAll(".rv").forEach((el) => io.observe(el));
 } else document.querySelectorAll(".rv").forEach((el) => el.classList.add("in"));
 
@@ -905,7 +1052,7 @@ const SCHED = [
   let cur = -1, touched = false;
   const aim = (i) => hand.style.setProperty("--a", (ang(mins(SCHED[i].s)) + ang(mins(SCHED[i].e))) / 2 + "deg");
   function pick(i) {
-    if (i === cur) return; cur = i; const x = SCHED[i];
+    if (i === cur) return; cur = i; const x = SCHED[i]; SND.play("tick");
     rows.forEach((r, j) => r.classList.toggle("on", j === i)); segs.forEach((g, j) => g.classList.toggle("on", j === i)); list.classList.add("has");
     hand.style.transition = ""; aim(i);
     $("#cc-time").textContent = `${x.s}~${x.e}`; $("#cc-title").textContent = x.t;
@@ -1053,14 +1200,14 @@ const esc = (s) => s.replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">"
 function ticket(t, fresh) {
   $("#formbox").innerHTML = `<div class="ticket-wrap${fresh ? " issue" : ""}"><div class="slot"></div><div class="ticket-clip"><div class="ticket-in"><div class="ticket" id="ticket" tabindex="-1">
     <div class="t-top"><p class="t-title"><b>D</b>의 게임</p><p class="t-no">${t.no ? "No. " + String(t.no).padStart(3, "0") : "샘플"}</p></div>
-    <dl><dt>닉네임</dt><dd>${esc(t.nick)}</dd><dt>성함</dt><dd>${esc(t.name)}</dd></dl>
+    <dl><dt>닉네임</dt><dd>${esc(t.nick)}</dd><dt>성함</dt><dd>${esc(t.name)}</dd>${t.plus ? `<dt>동반</dt><dd>${t.plus}명</dd>` : ""}</dl>
     ${TYPES[t.type] ? `<div class="t-badge"><canvas id="t-sigil" width="64" height="64"></canvas><p><small>재미로 보는 성향 배지</small><b>${TYPES[t.type].n}</b><span>배지 코드 ${esc(t.code || "")}</span><em>팀 배정과는 무관합니다.</em></p></div>` : ""}
     <div class="t-cut"></div>
-    <p class="t-foot">${t.no ? "예약이 접수되었습니다. 1월 23일 토요일 14:00에 만나요. 장소가 정해지면 안내드리겠습니다." : "샘플 화면이라 예약이 저장되지 않았습니다."}</p>
+    <p class="t-foot">${t.no ? "예약이 접수되었습니다. 예약 마감 후 단체 채팅방에 초대해 드리겠습니다." : "샘플 화면이라 예약이 저장되지 않았습니다."}</p>
   </div></div></div></div><p class="after">다른 분의 예약을 이어서 받으려면 <button type="button" id="again">새로 예약하기</button>를 눌러 주시기 바랍니다.</p>`;
   const el = $("#ticket");
   if (TYPES[t.type]) sigil($("#t-sigil"), t.type);
-  if (fresh) { $("#reserve").scrollIntoView({block: "start"}); el.focus({preventScroll: true}); }
+  if (fresh) { $("#reserve").scrollIntoView({block: "start"}); el.focus({preventScroll: true}); celebrate(); }
   if (motion) { const box = el.parentElement, at = (e) => { const r = el.getBoundingClientRect(); el.style.setProperty("--ry", ((e.clientX - r.left) / r.width - .5) * 10 + "deg"); el.style.setProperty("--rx", (.5 - (e.clientY - r.top) / r.height) * 8 + "deg"); },
       flat = () => { el.style.setProperty("--ry", "0deg"); el.style.setProperty("--rx", "0deg"); };
     if (matchMedia("(hover:hover)").matches) { box.addEventListener("pointermove", at); box.addEventListener("pointerleave", flat); } else touchTrack(box, at, flat);
@@ -1072,7 +1219,7 @@ const saved = store.get("dg-ticket"); if (saved && saved.nick) ticket(saved);
 const f = $("#f");
 if (f) f.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const v = {nick: $("#nick").value.trim(), name: $("#name").value.trim(), phone: phone.value.replace(/\D/g, ""), agree: $("#agree").checked, type: quizType()};
+  const v = {nick: $("#nick").value.trim(), name: $("#name").value.trim(), phone: phone.value.replace(/\D/g, ""), agree: $("#agree").checked, type: quizType(), plus: +((document.querySelector("input[name=plus]:checked") || {}).value || 0)};
   const bad = [];
   const check = (id, ok, text) => { const el = $("#" + id); $("#e-" + id).textContent = ok ? "" : text; el.setAttribute("aria-invalid", ok ? "false" : "true"); if (!ok) bad.push(el); };
   check("nick", v.nick, "닉네임을 입력해 주시기 바랍니다.");
@@ -1081,15 +1228,101 @@ if (f) f.addEventListener("submit", async (e) => {
   check("agree", v.agree, "개인정보 수집과 이용에 동의해 주시기 바랍니다.");
   if (bad.length) { bad[0].focus(); return; }
   const btn = $("#btn"), msg = $("#msg"); msg.textContent = "";
-  if (!API) { ticket({nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : missionCode(v.type, 0)}, true); return; }  // 샘플: 저장 없이 화면만
+  if (!API) { ticket({nick: v.nick, name: v.name, plus: v.plus, type: v.type, code: v.type == null ? "" : missionCode(v.type, 0)}, true); return; }  // 샘플: 저장 없이 화면만
   btn.disabled = true; btn.textContent = "보내는 중입니다";
   try {
     const t = await (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(Object.assign({r: "reserve"}, v))})).json();
-    if (t.ok) { const tk = {no: t.no, nick: v.nick, name: v.name, type: v.type, code: v.type == null ? "" : (t.code || missionCode(v.type, t.no))}; store.set("dg-ticket", tk); showCount(t.count); ticket(tk, true); return; }
+    if (t.ok) { const tk = {no: t.no, nick: v.nick, name: v.name, plus: v.plus, type: v.type, code: v.type == null ? "" : (t.code || missionCode(v.type, t.no))}; store.set("dg-ticket", tk); showCount(t.count); ticket(tk, true); return; }
     msg.textContent = t.error === "dup" ? "이미 예약된 전화번호입니다." : "입력 내용을 다시 확인해 주시기 바랍니다.";
   } catch (err) { msg.textContent = "예약을 보내지 못했습니다. 잠시 뒤 다시 시도해 주시기 바랍니다."; }
   btn.disabled = false; btn.textContent = "예약하기";
 });
+
+// 예약 완료: 좌우 아래에서 픽셀 폭죽이 세 번 터지고, 안내 팝업이 뜬다
+function fireworks() {
+  if (!motion) return;
+  const cv = document.createElement("canvas"); cv.className = "fw"; cv.setAttribute("aria-hidden", "true"); document.body.append(cv);
+  const ctx = cv.getContext("2d"), dpr = Math.min(devicePixelRatio || 1, 2), W = innerWidth, H = innerHeight, big = W >= 768, P = [];
+  cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
+  const COL = ["#ff12c8", "#3ff5ff", "#ffffff", "#ffc2f1", "#b79bff"];
+  const volley = (side) => { const n = big ? 70 : 38;
+    for (let i = 0; i < n; i++) { const an = (side < 0 ? -1.2 + Math.random() * .95 : -1.94 - Math.random() * .95), sp = (big ? 13 : 9) + Math.random() * (big ? 15 : 10);
+      P.push({x: side < 0 ? -6 : W + 6, y: H * (.62 + Math.random() * .3), vx: Math.cos(an) * sp, vy: Math.sin(an) * sp, u: (big ? 5 : 3) + ((Math.random() * (big ? 8 : 5)) | 0), c: COL[(Math.random() * COL.length) | 0], life: 0, max: 1.3 + Math.random() * 1.1, ph: Math.random() * 6.28}); } };
+  [0, 380, 820].forEach((ms) => setTimeout(() => { volley(-1); volley(1); }, ms));
+  let last = performance.now(); const t0 = last; window.__fw = {n: 0, peak: 0};
+  (function tick(now) {
+    const dt = Math.min(.05, (now - last) / 1000), f = dt * 60; last = now; ctx.clearRect(0, 0, W, H);
+    const pb = document.querySelector("#pop:not([hidden]) .pop-box"), br = pb ? pb.getBoundingClientRect() : null;  // 팝업 글 위로는 지나가지 않게
+    for (let i = P.length - 1; i >= 0; i--) { const p = P[i]; p.life += dt; if (p.life > p.max || p.y > H + 30) { P.splice(i, 1); continue; }
+      p.vx *= Math.pow(.985, f); p.vy = p.vy * Math.pow(.985, f) + .32 * f; p.x += p.vx * f; p.y += p.vy * f;
+      if (br && p.x + p.u > br.left && p.x < br.right && p.y + p.u > br.top && p.y < br.bottom) continue;
+      const k = p.life / p.max; ctx.globalAlpha = (k < .7 ? 1 : 1 - (k - .7) / .3) * (((now / 80 + p.ph * 9) | 0) % 6 === 0 ? .45 : 1); ctx.fillStyle = p.c;
+      ctx.fillRect(Math.round(p.x / 2) * 2, Math.round(p.y / 2) * 2, p.u, p.u); }
+    window.__fw.n = P.length; window.__fw.peak = Math.max(window.__fw.peak, P.length);
+    if (P.length || now - t0 < 900) requestAnimationFrame(tick); else cv.remove();
+  })(last);
+}
+function celebrate() {
+  SND.play("win"); fireworks();
+  const pop = $("#pop"), ok = $("#popok"); pop.hidden = false; ok.focus({preventScroll: true});
+  const close = () => { pop.hidden = true; removeEventListener("keydown", key); const t = $("#ticket"); if (t) t.focus({preventScroll: true}); };
+  const key = (e) => { if (e.key === "Escape") close(); };
+  ok.onclick = close; pop.onclick = (e) => { if (e.target === pop) close(); }; addEventListener("keydown", key);
+}
+
+// 효과음 연결: 카드에 올리면(휴대폰은 대면) 짧은 소리, 가려진 카드는 지지직, 카드 패는 넘기는 소리, 단추는 누르는 소리
+(() => {
+  const hov = matchMedia("(hover:hover)").matches;
+  document.querySelectorAll(".game").forEach((el) => {
+    el.addEventListener(hov ? "pointerenter" : "touchstart", () => SND.play(el.querySelector(".veil") ? "glitch" : el.querySelector(".deck") ? "card" : "blip"), {passive: true});
+    el.addEventListener("click", (e) => { if (motion && !e.target.closest(".deck")) dust.boom(e.clientX, e.clientY); });  // 카드를 누르면 그 자리에서 픽셀이 튄다
+  });
+  const deck = $("#deck");
+  if (deck) { deck.addEventListener("pointerdown", () => SND.play("card")); deck.addEventListener("pointerover", (e) => { if (e.target.closest(".pc")) SND.play("card", .9 + Math.random() * .3); }); }
+  document.addEventListener("click", (e) => { if (e.target.closest("a.go,.cta,.nav nav a,.send,summary,.opts label,.plus label,#again,.adm-b")) SND.play("blip", 1.15); });
+  if ($("#quiz")) $("#quiz").addEventListener("change", () => { if (quizType() != null) SND.play("glitch", 1.3); });
+})();
+
+// 관리자 창: 톱니바퀴 → 비밀번호 → 예약 시트 내용을 한눈에. 비밀번호 확인은 서버(앱스 스크립트)가 하고, 이 화면에는 비밀번호가 들어 있지 않다
+(() => {
+  const box = $("#adm"), body = $("#admbody"), acts = $("#admacts"); let pin = "";
+  const close = () => { box.hidden = true; document.body.style.overflow = ""; };
+  const open = () => { box.hidden = false; document.body.style.overflow = "hidden"; if (pin) load(); else ask(""); };
+  $("#admbtn").addEventListener("click", open);
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !box.hidden) close(); });
+  const bar = (more) => { acts.innerHTML = (more || "") + '<button class="adm-b" type="button" id="admclose">닫기</button>'; $("#admclose").onclick = close; };
+  function ask(msg) {
+    bar(""); body.innerHTML = `<form class="adm-pin" id="admf"><p>관리자 비밀번호를 입력해 주시기 바랍니다.</p><input id="admpin" type="password" inputmode="numeric" maxlength="8" autocomplete="off" aria-label="관리자 비밀번호"><button class="adm-b" type="submit">확인</button><p class="adm-msg" role="alert">${msg}</p></form>`;
+    $("#admf").addEventListener("submit", (e) => { e.preventDefault(); pin = $("#admpin").value.trim(); if (pin) load(); }); $("#admpin").focus();
+  }
+  async function load() {
+    if (!API) { pin = ""; return ask("샘플 화면에서는 예약 자료가 없습니다."); }
+    bar(""); body.innerHTML = '<p class="adm-empty">불러오는 중입니다</p>';
+    try {
+      const t = await (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify({r: "admin", pin})})).json();
+      if (!t.ok) { pin = ""; return ask(t.error === "locked" ? "여러 번 틀려 잠겼습니다. 10분 뒤 다시 시도해 주시기 바랍니다." : "비밀번호가 맞지 않습니다."); }
+      render(t);
+    } catch (err) { ask("불러오지 못했습니다. 잠시 뒤 다시 시도해 주시기 바랍니다."); }
+  }
+  function render(t) {
+    const rows = t.rows || [], n = rows.length, plus = rows.reduce((a, r) => a + (+r.plus || 0), 0), cnt = TYPES.map(() => 0); let none = 0;
+    rows.forEach((r) => { if (Number.isInteger(r.type) && TYPES[r.type]) cnt[r.type]++; else none++; });
+    const ans = n - none, pct = (k, of) => (of ? Math.round((k / of) * 100) : 0);
+    bar(`<button class="adm-b" type="button" id="admre">새로 고침</button>${t.sheet ? `<a class="adm-b" href="${esc(t.sheet)}" target="_blank" rel="noopener">시트 열기</a>` : ""}`);
+    $("#admre").onclick = load;
+    const now = new Date(), hm = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+    body.innerHTML = `<p class="adm-note">${hm} 기준입니다. 성함과 전화번호가 보이니 화면을 공유할 때 주의해 주시기 바랍니다.</p>
+      <div class="adm-tiles"><div class="adm-tile"><span>예약</span><b>${n}<small>건</small></b></div><div class="adm-tile"><span>동반 인원</span><b>${plus}<small>명</small></b></div><div class="adm-tile"><span>총 참석 예정</span><b>${n + plus}<small>명</small></b></div><div class="adm-tile"><span>성향 배지 응답</span><b>${ans}<small>명 · ${pct(ans, n)}%</small></b></div></div>
+      <h3>성향 배지 비중</h3>
+      ${ans ? `<div class="adm-stack" role="img" aria-label="성향 배지 비중">${TYPES.map((x, i) => (cnt[i] ? `<i style="--c:${x.c};flex:${cnt[i]} 0 0;opacity:${i < 4 ? 1 : .62}" title="${x.n} ${cnt[i]}명"></i>` : "")).join("")}</div>` : ""}
+      <div class="adm-bars">${TYPES.map((x, i) => `<div class="adm-bar"><canvas width="56" height="56" data-t="${i}"></canvas><span>${x.n}</span><div class="tr"><i style="--c:${x.c}" data-w="${pct(cnt[i], ans)}"></i></div><em>${cnt[i]}명 · ${pct(cnt[i], ans)}%</em></div>`).join("")}</div>
+      <p class="adm-note">비율은 성향 문항에 답한 ${ans}명 기준입니다. 답하지 않은 예약은 ${none}건입니다.</p>
+      <h3>예약 명단</h3>
+      ${n ? `<div class="adm-scroll"><table class="adm-table"><thead><tr><th>번호</th><th>시각</th><th>닉네임</th><th>성함</th><th>전화번호</th><th>동반</th><th>성향 배지</th><th>배지 코드</th></tr></thead><tbody>${rows.map((r) => `<tr><td>${esc(String(r.no))}</td><td>${esc(String(r.at || ""))}</td><td>${esc(String(r.nick || ""))}</td><td>${esc(String(r.name || ""))}</td><td>${esc(String(r.phone || ""))}</td><td>${+r.plus ? r.plus + "명" : "-"}</td><td>${TYPES[r.type] ? TYPES[r.type].n : "-"}</td><td>${esc(String(r.code || "-"))}</td></tr>`).join("")}</tbody></table></div>` : '<p class="adm-empty">아직 예약이 없습니다.</p>'}`;
+    body.querySelectorAll("canvas[data-t]").forEach((c) => sigil(c, +c.dataset.t));
+    requestAnimationFrame(() => requestAnimationFrame(() => body.querySelectorAll(".tr i").forEach((i) => { i.style.width = i.dataset.w + "%"; })));
+  }
+})();
 </script>
 </body>
 </html>
