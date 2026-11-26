@@ -524,8 +524,6 @@ canvas.fw{position:fixed;inset:0;z-index:81;width:100%;height:100%;pointer-event
 </head>
 <body>
 <div class="cover" id="cover">
-  <p class="cover-tap"><b>TAP TO START</b><span>화면을 누르면 소리와 함께 시작합니다</span></p>
-  <button class="cover-mute" id="covermute" type="button">소리 없이 보기</button>
   <picture class="cover-bg"><source media="(max-width:767px)" srcset="img/cover_tall.jpg"><img src="img/cover.jpg" alt=""></picture>
   <i class="cover-flash"></i>
   <div class="cm"><i class="cover-bars"></i><span class="cm-t cm-the">THE</span><span class="cm-dw"><b class="cm-d chrome">D</b></span><span class="cm-t cm-game">GAME</span></div>
@@ -739,14 +737,14 @@ const SND = (() => {
   function toggle(v) { on = v === undefined ? !on : v; try { localStorage.setItem("dg-snd", on ? "1" : "0"); } catch (e) {} paint(); if (!on) stopBgm(); else if (ctx) { unlock(); startBgm(); } }
   document.addEventListener("visibilitychange", () => { if (!ctx) return; if (document.hidden) ctx.suspend(); else if (on) ctx.resume(); });
   // 표지가 없을 때(다시 들어온 사람, 동작 줄이기)도 처음 누르면 켜진다
-  ["pointerdown", "keydown"].forEach((n) => addEventListener(n, () => unlock(), {once: true, capture: true}));
+  ["pointerdown", "touchend", "keydown"].forEach((n) => addEventListener(n, () => unlock(), {capture: true, passive: true}));
   addEventListener("DOMContentLoaded", paint); paint();
   return {play, unlock, toggle, state: () => ({on, ctx: ctx ? ctx.state : "none", bgm: !!bgm, loaded: names.filter((n) => buf[n])})};
 })();
 window.__snd = SND;
 document.getElementById("sndbtn").addEventListener("click", () => { SND.toggle(); SND.play("blip"); });
 
-// 오프닝 표지: 누르면 시작 → D 가 내리꽂힘 → 1.75초 뒤(또는 누르거나 스크롤하면) D 가 첫 화면 제목 자리로 날아가 앉는다
+// 오프닝 표지: 열자마자 시작 → D 가 내리꽂힘 → 1.75초 뒤(또는 누르거나 스크롤하면) D 가 첫 화면 제목 자리로 날아가 앉는다
 (() => {
   const root = document.documentElement, cover = $("#cover");
   if (!root.classList.contains("covering")) return;
@@ -775,20 +773,13 @@ document.getElementById("sndbtn").addEventListener("click", () => { SND.toggle()
     setTimeout(() => { if (!done) dust.boom(innerWidth / 2, innerHeight / 2); }, 370);  // D 가 내려앉는 순간 픽셀이 터진다
     setTimeout(leave, 1750);
   }
-  // 표지는 눌러야 시작한다(소리를 모션과 맞춰 내려면 누르는 순간이 필요하다). '소리 없이 보기'를 누르면 소리만 끄고 같은 모션을 본다
-  let waiting = true;
+  // 표지는 열자마자 시작한다. 소리는 기본으로 켜져 있지만, 브라우저가 누르기 전 소리를 막으면 처음 누르는 순간부터 난다(막지 않는 환경에서는 오프닝 소리가 모션과 함께 난다)
   const ready = document.fonts && document.fonts.load ? document.fonts.load('800 100px "Unbounded"').catch(() => {}) : Promise.resolve();
   const fontsIn = Promise.race([ready, new Promise((r) => setTimeout(r, 700))]);
-  function begin(sound) {
-    if (!waiting) return; waiting = false;
-    if (!sound) SND.toggle(false);
-    const snd = sound ? Promise.race([SND.unlock(["slam", "whoosh"]), new Promise((r) => setTimeout(r, 600))]) : Promise.resolve();
-    Promise.all([fontsIn, snd]).then(() => setTimeout(start, 0));
-  }
-  cover.addEventListener("click", (e) => { if (waiting) begin(!e.target.closest("#covermute")); else leave(); });
-  addEventListener("keydown", (e) => { if (done || e.key === "Tab") return; if (waiting) begin(true); else leave(); });
+  const snd = Promise.race([SND.unlock(["slam", "whoosh"]), new Promise((r) => setTimeout(r, 450))]);
+  cover.addEventListener("click", leave); addEventListener("keydown", (e) => { if (!done && e.key !== "Tab") leave(); });
   ["wheel", "touchmove"].forEach((n) => addEventListener(n, skip, {passive: true, once: true}));
-  window.__cover = {begin, waiting: () => waiting};
+  Promise.all([fontsIn, snd]).then(() => setTimeout(start, 0));
 })();
 const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 
