@@ -537,6 +537,8 @@ footer .wrap{flex-wrap:wrap}
 .chg-box h3{padding-right:36px;font-weight:900;font-size:22px;line-height:1.3;letter-spacing:-.03em}
 .chg-sub{margin-top:8px;font-size:15px;line-height:1.6;color:#eadbe8}
 .chg-sub b{color:var(--cyan)}
+.chg-box form{display:block;margin:0;padding:0;border:0;background:none;clip-path:none;box-shadow:none}
+.chg-box form::before,.chg-box form::after{content:none}
 .chg-box form label{display:block;margin-top:16px;font-size:14px;font-weight:700}
 .chg-box form input{width:100%;height:52px;margin-top:6px;padding:0 16px;border:1px solid var(--line);border-radius:3px;background:rgba(0,0,0,.4);font-size:17px}
 .chg-box form input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(63,245,255,.18)}
@@ -1356,7 +1358,9 @@ function celebrate() {
   $("#chgbtn").addEventListener("click", open); $("#chgclose").addEventListener("click", close);
   box.addEventListener("click", (e) => { if (e.target === box) close(); });
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !box.hidden) close(); });
-  const call = async (o) => (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(Object.assign({name: who.name, phone: who.phone}, o))})).json();
+  // 체험: 성함 Test, 연락처 000-0000-0000 을 넣으면 서버를 부르지 않고 같은 화면만 보여 준다(시트에는 아무것도 반영되지 않는다)
+  const demo = (o) => Promise.resolve(o.r === "find" ? {ok: true, no: 0, nick: "체험", plus: 1} : o.r === "plus" ? {ok: true, plus: o.plus, count: null} : {ok: true, count: null});
+  const call = async (o) => who.demo ? demo(o) : (await fetch(API, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(Object.assign({name: who.name, phone: who.phone}, o))})).json();
   function ask(msg) {
     body.innerHTML = `<h3 id="chgh">예약 변경</h3><p class="chg-sub">예약할 때 적은 성함과 연락처를 입력해 주시기 바랍니다.</p>
       <form id="chgf" novalidate><label for="chgname">성함</label><input id="chgname" type="text" maxlength="20" autocomplete="name"><label for="chgphone">연락처</label><input id="chgphone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000" autocomplete="tel">
@@ -1365,6 +1369,7 @@ function celebrate() {
     ph.addEventListener("input", () => { const d = ph.value.replace(/\D/g, "").slice(0, 11); ph.value = d.length < 4 ? d : d.length < 8 ? d.slice(0, 3) + "-" + d.slice(3) : d.slice(0, 3) + "-" + d.slice(3, d.length === 10 ? 6 : 7) + "-" + d.slice(d.length === 10 ? 6 : 7); });
     f.addEventListener("submit", async (e) => {
       e.preventDefault(); const name = $("#chgname").value.trim(), phone = ph.value.replace(/\D/g, ""), m = f.querySelector(".chg-msg"), b = f.querySelector("button");
+      if (name.toLowerCase() === "test" && /^0{10,11}$/.test(phone)) { who = {name, phone, demo: true}; return menu(await call({r: "find"})); }
       if (!name || !/^01\d{8,9}$/.test(phone)) { m.textContent = "성함과 연락처를 정확히 입력해 주시기 바랍니다."; return; }
       if (!API) { m.textContent = "샘플 화면에서는 예약을 찾을 수 없습니다."; return; }
       who = {name, phone}; b.disabled = true; b.textContent = "찾는 중입니다";
@@ -1376,28 +1381,28 @@ function celebrate() {
   }
   function menu(t) {
     who.no = t.no; who.plus = +t.plus || 0;
-    body.innerHTML = `<h3 id="chgh">No. ${String(t.no).padStart(3, "0")} ${esc(String(t.nick || ""))}님의 예약</h3><p class="chg-sub">동반 인원 <b id="chgnow">${who.plus ? who.plus + "명" : "없음"}</b></p>
+    body.innerHTML = `<h3 id="chgh">${who.demo ? "체험용 예약" : `No. ${String(t.no).padStart(3, "0")} ${esc(String(t.nick || ""))}님의 예약`}</h3><p class="chg-sub">동반 인원 <b id="chgnow">${who.plus ? who.plus + "명" : "없음"}</b></p>
       <div class="chg-plus" id="chgplus" hidden><div class="plus" role="radiogroup" aria-label="동반 인원">${[0, 1, 2, 3].map((n) => `<label><input type="radio" name="chgp" value="${n}"${n === who.plus ? " checked" : ""}><span>${n ? n + "명" : "없음"}</span></label>`).join("")}</div><button class="chg-main" type="button" id="chgsave">저장</button></div>
-      <p class="chg-msg" id="chgmsg" role="status"></p>
+      <p class="chg-msg" id="chgmsg" role="status">${who.demo ? "체험 화면입니다. 실제 예약은 바뀌지 않습니다." : ""}</p>
       <div class="chg-run" id="chgrun"><button class="chg-b" type="button" id="chgedit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>인원 변경</button>
       <button class="chg-b danger" type="button" id="chgdel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>예약 취소</button></div>`;
     const msg = $("#chgmsg");
     $("#chgedit").addEventListener("click", () => { const p = $("#chgplus"); p.hidden = !p.hidden; });
     $("#chgsave").addEventListener("click", async () => {
       const n = +document.querySelector("input[name=chgp]:checked").value, b = $("#chgsave"); b.disabled = true; msg.textContent = "";
-      try { const r = await call({r: "plus", plus: n}); if (r.ok) { who.plus = n; $("#chgnow").textContent = n ? n + "명" : "없음"; $("#chgplus").hidden = true; msg.textContent = "동반 인원을 바꿨습니다."; showCount(r.count); sync((tk) => { tk.plus = n; return tk; }); SND.play("blip", 1.15); } else msg.textContent = "바꾸지 못했습니다. 다시 시도해 주시기 바랍니다."; }
+      try { const r = await call({r: "plus", plus: n}); if (r.ok) { who.plus = n; $("#chgnow").textContent = n ? n + "명" : "없음"; $("#chgplus").hidden = true; msg.textContent = "동반 인원을 바꿨습니다."; if (r.count != null) showCount(r.count); sync((tk) => { tk.plus = n; return tk; }); SND.play("blip", 1.15); } else msg.textContent = "바꾸지 못했습니다. 다시 시도해 주시기 바랍니다."; }
       catch (err) { msg.textContent = "바꾸지 못했습니다. 잠시 뒤 다시 시도해 주시기 바랍니다."; }
       b.disabled = false;
     });
     runaway($("#chgdel"), $("#chgrun"), async () => {
       const b = $("#chgdel"); b.disabled = true; msg.textContent = "취소하는 중입니다";
-      try { const r = await call({r: "cancel"}); if (r.ok) { showCount(r.count); sync(() => null); return bye(); } msg.textContent = "취소하지 못했습니다. 다시 시도해 주시기 바랍니다."; }
+      try { const r = await call({r: "cancel"}); if (r.ok) { if (r.count != null) showCount(r.count); if (!who.demo) sync(() => null); return bye(); } msg.textContent = "취소하지 못했습니다. 다시 시도해 주시기 바랍니다."; }
       catch (err) { msg.textContent = "취소하지 못했습니다. 잠시 뒤 다시 시도해 주시기 바랍니다."; }
       b.disabled = false;
     });
   }
   // 이 기기에 남아 있는 예약증이 같은 예약이면 함께 고치거나 지운다
-  function sync(fn) { const tk = store.get("dg-ticket"); if (!tk || tk.no !== who.no) return; const nx = fn(tk); store.set("dg-ticket", nx); if (nx) ticket(nx); else if ($("#ticket")) reload = true; }  // 취소했으면 창을 닫을 때 예약 칸으로 되돌린다
+  function sync(fn) { const tk = store.get("dg-ticket"); if (who.demo || !tk || tk.no !== who.no) return; const nx = fn(tk); store.set("dg-ticket", nx); if (nx) ticket(nx); else if ($("#ticket")) reload = true; }  // 취소했으면 창을 닫을 때 예약 칸으로 되돌린다
   // 도망가는 단추
   function runaway(btn, area, done) {
     let n = 0, home = true, rest = 0; const MAX = hov ? 6 : 4; window.__run = {n: 0, max: MAX};
