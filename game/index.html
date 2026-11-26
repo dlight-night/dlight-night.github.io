@@ -344,9 +344,9 @@ form{position:relative;background:var(--panel);border:1px solid rgba(63,245,255,
 .opts input:focus-visible + span{border-color:#fff;box-shadow:0 0 0 2px #fff}
 .quiz-out{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid rgba(255,18,200,.5);background:rgba(255,18,200,.08)}
 .quiz-out[hidden]{display:none}
-.quiz-out canvas{width:56px;height:56px;flex:none;background:#000;image-rendering:pixelated}
-.motion .quiz-out canvas{animation:sigilin .5s steps(5) both}
-@keyframes sigilin{from{opacity:0;transform:scale(1.6)}to{opacity:1;transform:none}}
+.quiz-out canvas{width:76px;height:76px;flex:none;background:#000;border-radius:8px}
+.motion .quiz-out canvas{animation:sigilin .45s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes sigilin{from{opacity:0;transform:scale(1.5) rotate(-8deg)}to{opacity:1;transform:none}}
 .quiz-out b{display:block;font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-.02em}
 .quiz-out span{display:block;font-size:14px;line-height:20px;color:#eadbe8}
 details{font-size:14px;line-height:20px;color:var(--mute)}
@@ -382,7 +382,7 @@ details dt{color:var(--soft)}
 .ticket dt{font-size:13px;font-weight:700;color:#4a4d57}
 .ticket dd{margin:0 0 12px;font-size:28px;font-weight:900;line-height:1.2;letter-spacing:-.03em;overflow-wrap:anywhere}
 .t-badge{display:flex;align-items:center;gap:14px;margin:2px 0 12px}
-.t-badge canvas{width:64px;height:64px;flex:none;background:#000;border-radius:6px;image-rendering:pixelated}
+.t-badge canvas{width:92px;height:92px;flex:none;background:#000;border-radius:12px}
 .t-badge small{display:block;font-size:13px;font-weight:700;color:#4a4d57}
 .t-badge b{display:block;font-size:22px;font-weight:900;line-height:1.25;letter-spacing:-.03em}
 .t-badge span{display:block;margin-top:2px;font:800 12px/1.4 var(--display);letter-spacing:.02em;color:#1c1d22}
@@ -508,8 +508,8 @@ canvas.fw{position:fixed;inset:0;z-index:81;width:100%;height:100%;pointer-event
 .adm-stack{display:flex;height:24px;margin-top:12px;background:rgba(255,255,255,.06)}
 .adm-stack i{display:block;height:100%;background:var(--c);min-width:0}
 .adm-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;margin-top:14px}
-.adm-bar{display:grid;grid-template-columns:28px 118px 1fr 64px;gap:10px;align-items:center;font-size:14px}
-.adm-bar canvas{width:28px;height:28px;image-rendering:pixelated}
+.adm-bar{display:grid;grid-template-columns:44px 118px 1fr 64px;gap:10px;align-items:center;font-size:14px}
+.adm-bar canvas{width:44px;height:44px;border-radius:6px}
 .adm-bar .tr{height:12px;background:rgba(255,255,255,.07)}
 .adm-bar .tr i{display:block;height:100%;width:0;background:var(--c);transition:width .7s var(--ease)}
 .adm-bar em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--soft)}
@@ -519,7 +519,7 @@ canvas.fw{position:fixed;inset:0;z-index:81;width:100%;height:100%;pointer-event
 .adm-table th{font-weight:700;color:var(--cyan);background:rgba(255,255,255,.03)}
 .adm-table tr:last-child td{border-bottom:0}
 .adm-empty{margin-top:12px;padding:28px;border:1px solid var(--line);text-align:center;color:var(--mute)}
-@media(max-width:767px){.adm-tiles{grid-template-columns:1fr 1fr}.adm-bars{grid-template-columns:1fr}.adm-bar{grid-template-columns:24px 98px 1fr 80px;gap:8px}.adm-tile b{font-size:24px}}
+@media(max-width:767px){.adm-tiles{grid-template-columns:1fr 1fr}.adm-bars{grid-template-columns:1fr}.adm-bar{grid-template-columns:40px 96px 1fr 80px;gap:8px}.adm-tile b{font-size:24px}}
 </style>
 </head>
 <body>
@@ -1168,16 +1168,13 @@ const TYPES = [
   {n: "레이어 지휘자", d: "순서를 정하고 팀을 움직입니다.", c: "#b79bff"},
   {n: "컬러 폭죽", d: "팀의 기세를 올립니다.", c: "#ffc2f1"},
 ];
-// 픽셀 배지: 성향마다 정해진 좌우 대칭 7×7 무늬
+// 성향 배지: 성향마다 표정과 소품이 다른 캐릭터 그림(img/b0~b7.jpg). 캔버스에 그려 넣는다
+const BADGE = [];
 function sigil(cv, type) {
-  const ctx = cv.getContext("2d"), u = cv.width / 8, o = u / 2; let seed = 7 + type * 9973;
-  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-  ctx.clearRect(0, 0, cv.width, cv.height);
-  for (let y = 0; y < 7; y++) for (let x = 0; x < 4; x++) {
-    const r = rnd(); if (r > .58 && !(x === 3 && y === 3)) continue;
-    ctx.fillStyle = x === 3 && y === 3 ? "#fff" : r < .12 ? "#fff" : TYPES[type].c;
-    ctx.fillRect(o + x * u, o + y * u, u, u); ctx.fillRect(o + (6 - x) * u, o + y * u, u, u);
-  }
+  cv.width = cv.height = 192; const ctx = cv.getContext("2d");
+  const im = BADGE[type] || (BADGE[type] = Object.assign(new Image(), {src: `img/b${type}.jpg`}));
+  const draw = () => { ctx.clearRect(0, 0, 192, 192); ctx.drawImage(im, 0, 0, 192, 192); };
+  if (im.complete && im.naturalWidth) draw(); else im.addEventListener("load", draw);
 }
 const quizType = () => { const a = [1, 2, 3].map((i) => { const c = document.querySelector(`input[name=q${i}]:checked`); return c ? +c.value : -1; }); return a.includes(-1) ? null : a[0] * 4 + a[1] * 2 + a[2]; };
 const missionCode = (type, no) => "D" + type + "-" + ((no ? no * 7919 : (Math.random() * 46000) | 0) + type * 5407 + 4242).toString(36).toUpperCase().slice(-3).padStart(3, "0");
