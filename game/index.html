@@ -163,7 +163,8 @@ html.viacover.landed .hero-copy h1{opacity:1;animation:glitch 11s steps(1) 4s in
 .band div{display:flex;width:max-content;gap:0;font-weight:900;font-size:clamp(22px,3vw,34px);line-height:1.2;letter-spacing:-.03em;white-space:nowrap;
   color:rgba(255,255,255,.95);text-shadow:1px 0 rgba(63,245,255,.75),-1px 0 rgba(255,18,200,.9)}
 .band span{display:inline-flex;align-items:center;gap:30px;padding-right:30px}
-.band span:nth-child(even){color:transparent;-webkit-text-stroke:1px var(--cyan);text-shadow:none}
+/* 외곽선 글자: 가변 글꼴은 획이 겹친 자리의 선까지 그려지므로, 선을 먼저 긋고 띠 바탕색으로 안을 덮는다 */
+.band span:nth-child(even){color:#150a1c;-webkit-text-stroke:2px var(--cyan);paint-order:stroke fill;text-shadow:none}
 .band span::after{content:"";flex:none;width:6px;height:6px;margin-right:12px;background:var(--cyan);box-shadow:12px 0 var(--cyan),6px 6px #fff,0 12px var(--cyan),12px 12px var(--cyan);transform:translateY(-6px);-webkit-text-stroke:0}
 .motion .band div{animation:slide 40s linear infinite}
 .band.off div{animation-play-state:paused}
@@ -234,6 +235,12 @@ h2{font-weight:900;font-size:clamp(36px,5.4vw,64px);line-height:1.1;letter-spaci
 @media(max-width:767px){.pc{width:25%;margin-left:-12.5%;bottom:26%}}
 .deck.used .deck-hint{opacity:0}
 .game figure canvas.depth{position:absolute;inset:0;width:100%;height:100%;display:block}
+.game figure.veil canvas{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated}
+.game figure.veil::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,transparent 0 10px,rgba(10,0,12,.5) 10px 12px),radial-gradient(circle at 50% 46%,transparent 30%,rgba(10,0,12,.7) 100%)}
+.veil-tag{position:absolute;left:50%;top:50%;z-index:1;transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;margin:0;padding:9px 16px;white-space:nowrap;
+  font-size:15px;font-weight:800;line-height:20px;color:#fff;background:rgba(10,0,12,.82);border:1px solid rgba(255,18,200,.8);box-shadow:0 0 22px rgba(255,18,200,.35)}
+.game .veil-tag{margin:0;color:#fff}
+.veil-tag svg{color:var(--magenta);flex:none}
 .fine{margin-top:28px;font-size:14px;line-height:20px;color:var(--mute)}
 
 /* ── 하루 흐름 ── */
@@ -485,10 +492,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </section>
 
   <div class="band" aria-hidden="true"><div>
-    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>인간 윷놀이</span><span>합산 플레이</span>
-    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>인간 윷놀이</span><span>합산 플레이</span>
-    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>인간 윷놀이</span><span>합산 플레이</span>
-    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>인간 윷놀이</span><span>합산 플레이</span>
+    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>팔레트 경매</span><span>블라인드 브리프</span>
+    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>팔레트 경매</span><span>블라인드 브리프</span>
+    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>팔레트 경매</span><span>블라인드 브리프</span>
+    <span>틀린그림찾기</span><span>로고 도형 추론</span><span>카드 대결</span><span>팔레트 경매</span><span>블라인드 브리프</span>
   </div></div>
 
   <section id="games">
@@ -518,12 +525,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <div class="txt"><span class="kind team">팀전</span><h4>카드 대결</h4><p>1부터 6, 그리고 K. 카드 일곱 장으로 겨루는 팀 게임입니다.</p></div>
           </article>
           <article class="game rv" style="--d:90ms">
-            <figure><img src="img/g_yut.jpg" alt="" width="1000" height="1000" loading="lazy"></figure>
-            <div class="txt"><span class="kind team">팀전</span><h4>인간 윷놀이</h4><p>팀이 함께하는 윷놀이입니다. 진행 방식은 추후 공개합니다.</p></div>
+            <figure class="veil" data-seed="7" role="img" aria-label="모자이크로 가려진 그림. 당일 공개"><canvas></canvas><p class="veil-tag"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 6V4h1V2h1V1h4v1h1v2h1v2h1v7H2V6h1zm2 0h4V4H8V3H6v1H5v2z"/></svg>당일 공개</p></figure>
+            <div class="txt"><span class="kind team">팀전</span><h4>팔레트 경매</h4><p>어떤 게임인지는 당일 현장에서 공개합니다.</p></div>
           </article>
           <article class="game rv" style="--d:180ms">
-            <figure><img src="img/g_sum.jpg" alt="" width="1000" height="1000" loading="lazy"></figure>
-            <div class="txt"><span class="kind team">팀전</span><h4>합산 플레이</h4><p>공 튀기기, 제기차기, 바구니에 신발 넣기, 주사위 굴리기. 기록을 더해 겨룹니다.</p></div>
+            <figure class="veil" data-seed="23" role="img" aria-label="모자이크로 가려진 그림. 당일 공개"><canvas></canvas><p class="veil-tag"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 6V4h1V2h1V1h4v1h1v2h1v2h1v7H2V6h1zm2 0h4V4H8V3H6v1H5v2z"/></svg>당일 공개</p></figure>
+            <div class="txt"><span class="kind team">팀전</span><h4>블라인드 브리프</h4><p>어떤 게임인지는 당일 현장에서 공개합니다.</p></div>
           </article>
         </div>
       </div>
@@ -820,6 +827,22 @@ if (motion) document.querySelectorAll(".game figure, .flow figure").forEach((fig
   fig.append(px);
 });
 
+// 당일 공개 게임: 가려진 그림 대신 모자이크. 칸이 조금씩 바뀌며 뒤에 무언가 있는 듯 보인다(실제 그림은 없음)
+document.querySelectorAll(".game figure.veil").forEach((fig) => {
+  const cv = fig.querySelector("canvas"), ctx = cv.getContext("2d"), N = 16; cv.width = cv.height = N;
+  let sd = +fig.dataset.seed || 1; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const cx = .3 + rnd() * .4, cy = .3 + rnd() * .35, rx = .2 + rnd() * .16, ry = .2 + rnd() * .16;
+  const PAL = ["#0a000c", "#16041a", "#2a0030", "#5a0048", "#8f0a72", "#c80f9e", "#ff12c8", "#ff7be0", "#ffc2f1", "#e9e9f2"];
+  const cell = (x, y) => {
+    const dx = ((x + .5) / N - cx) / rx, dy = ((y + .5) / N - cy) / ry, v = Math.max(0, 1 - Math.hypot(dx, dy) * .62) + (Math.random() - .5) * .34;
+    ctx.fillStyle = Math.random() < .035 ? "#3ff5ff" : PAL[Math.max(0, Math.min(PAL.length - 1, Math.round(v * (PAL.length - 1))))]; ctx.fillRect(x, y, 1, 1);
+  };
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) cell(x, y);
+  if (!motion || !("IntersectionObserver" in window)) return;
+  let id = 0;
+  new IntersectionObserver(([e]) => { clearInterval(id); if (e.isIntersecting) id = setInterval(() => { for (let k = 0; k < 14; k++) cell((Math.random() * N) | 0, (Math.random() * N) | 0); }, 160); }).observe(fig);
+});
+
 // 스크롤로 나타나기(한 번만)
 if (motion && "IntersectionObserver" in window) {
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); if (e.target.tagName === "H2") dust.burst(e.boundingClientRect.top + e.boundingClientRect.height / 2); } }), {rootMargin: "0px 0px -8% 0px"});
@@ -843,8 +866,8 @@ const SCHED = [
   {s: "14:20", e: "15:10", t: "개인전 두뇌 게임", d: "틀린그림찾기, 로고 도형 추론", c: "#ffffff"},
   {s: "15:10", e: "15:30", t: "쉬는 시간", d: "잠시 쉬어 갑니다.", c: "#7b6a7a"},
   {s: "15:30", e: "16:10", t: "카드 대결", d: "카드 일곱 장으로 겨루는 팀 게임", c: "#ff12c8"},
-  {s: "16:10", e: "16:50", t: "인간 윷놀이", d: "팀이 함께하는 윷놀이", c: "#ff5ad9"},
-  {s: "16:50", e: "17:30", t: "합산 플레이", d: "공 튀기기, 제기차기, 바구니에 신발 넣기, 주사위 굴리기", c: "#ff12c8"},
+  {s: "16:10", e: "16:50", t: "팔레트 경매", d: "당일 공개", c: "#ff5ad9"},
+  {s: "16:50", e: "17:30", t: "블라인드 브리프", d: "당일 공개", c: "#ff12c8"},
   {s: "17:30", e: "18:00", t: "결과 발표", d: "개인전과 팀전 결과를 발표합니다.", c: "#3ff5ff"},
   {s: "18:00", e: "20:00", t: "뒤풀이", d: "게임이 끝나면 뒤풀이로 이어집니다.", c: "#ffc2f1"},
 ];
